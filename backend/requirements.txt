@@ -10,3 +10,4 @@ pytest-pythonpath==0.7.3
 PyYAML==6.0
 gunicorn==20.1.0
 django-filter==2.4.0
+python-dotenv==1.0.1
