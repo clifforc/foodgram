@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     'djoser',
 
     'api.apps.ApiConfig',
-    'pages.apps.PagesConfig',
     'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig'
 ]
@@ -96,6 +95,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# DJOSER = {
+#     'LOGIN_FIELD': 'email',
+# }
 
 LANGUAGE_CODE = 'ru-RU'
 
