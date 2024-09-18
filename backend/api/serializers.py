@@ -1,5 +1,3 @@
-from ctypes.wintypes import tagMSG
-
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
@@ -49,18 +47,25 @@ class SignUpSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    is_subscribed = serializers.BooleanField()
+    # is_subscribed = serializers.BooleanField()
 
     class Meta:
         model = User
-        fields = ('email', 'id', 'username', 'first_name', 'last_name',
-                  'is_subscribed', 'avatar')
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            # 'is_subscribed',
+            'avatar'
+        )
 
-    def get_is_subscribed(self, obj):
-        request = self.context.get('request')
-        if request and request.user.is_authenticated:
-            return obj.subscriber.filter(user=request.user).exists()
-        return False
+    # def get_is_subscribed(self, obj):
+    #     request = self.context.get('request')
+    #     if request and request.user.is_authenticated:
+    #         return obj.subscriber.filter(user=request.user).exists()
+    #     return False
 
 
-class TokenSerializer(serializers.ModelSerializer):
+# class TokenSerializer(serializers.ModelSerializer):

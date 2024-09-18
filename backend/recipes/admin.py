@@ -13,6 +13,7 @@ class RecipeAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'author',
+        'favorite_count',
     )
     search_fields =[
         'author',
@@ -22,16 +23,24 @@ class RecipeAdmin(admin.ModelAdmin):
         'tags',
     ]
     fieldsets = (
-        (None, {'fields': ('name', 'author', 'favorite_count', 'tags')}),
-        ('Описание', {'fields': ('text', 'cooking_time', 'created_at')})
+        (None, {'fields': ('name', 'author', 'tags')}),
+        ('Описание', {'fields': ('text', 'cooking_time')})
     )
     inlines = [RecipeIngredientInline]
 
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('name', 'author', 'tags', 'text',
+                       'cooking_time', 'ingredients')
+        }),
+    )
 
     def favorite_count(self, obj):
         return Favorite.objects.filter(recipe=obj).count()
 
     favorite_count.short_descriptrion = 'В избранном'
+
 
 @admin.register(Ingredient)
 class  IngredientAdmin(admin.ModelAdmin):

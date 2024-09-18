@@ -44,11 +44,20 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
+    tags = models.ManyToManyField(
+        Tag,
+        verbose_name='Тэги'
+    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='recipes',
         verbose_name='Автор'
+    )
+    ingredients = models.ManyToManyField(
+        Ingredient,
+        through='RecipeIngredient',
+        verbose_name='Ингредиенты'
     )
     name = models.CharField(
         max_length=constants.NAME_MAX_LENGTH,
@@ -61,22 +70,9 @@ class Recipe(models.Model):
     text = models.TextField(
         verbose_name='Описание'
     )
-    ingredients = models.ManyToManyField(
-        Ingredient,
-        through='RecipeIngredient',
-        verbose_name='Ингредиенты'
-    )
-    tags = models.ManyToManyField(
-        Tag,
-        verbose_name='Тэги'
-    )
     cooking_time = models.PositiveIntegerField(
         validators=[MinValueValidator(1)],
         verbose_name='Время приготовления'
-    )
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Дата создания'
     )
 
     def __str__(self):

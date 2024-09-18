@@ -18,10 +18,10 @@ class UserAdmin(UserAdmin):
         'username'
     )
     fieldsets = (
-        (None, {'fields': ('username', 'email', 'password')}),
+        (None, {'fields': ('username', 'email')}),
         (
             'Персональная информация', {
-                'fields': ('first_name', 'last_name')
+                'fields': ('first_name', 'last_name', 'avatar')
             }
         ),
         ('Разрешения',
