@@ -17,35 +17,38 @@ class Ingredient(models.Model):
         verbose_name='Единица измерения'
     )
 
-    def __str__(self):
-        return f"{self.name}, {self.measurement_unit}"
-
     class Meta:
         verbose_name = 'ингредиент'
         verbose_name_plural = 'Ингредиенты'
+
+    def __str__(self):
+        return self.name
 
 
 class Tag(models.Model):
     name = models.CharField(
         max_length=constants.TAG_MAX_LENGTH,
+        unique=True,
         verbose_name='Название'
     )
     slug = models.SlugField(
         max_length=constants.TAG_MAX_LENGTH,
+        unique=True,
         verbose_name='Слаг'
     )
-
-    def __str__(self):
-        return self.name
 
     class Meta:
         verbose_name = 'тэг'
         verbose_name_plural = 'Тэги'
 
+    def __str__(self):
+        return self.name
+
 
 class Recipe(models.Model):
     tags = models.ManyToManyField(
         Tag,
+        related_name='recipes',
         verbose_name='Тэги'
     )
     author = models.ForeignKey(
@@ -75,24 +78,24 @@ class Recipe(models.Model):
         verbose_name='Время приготовления'
     )
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = 'рецепт'
         verbose_name_plural = 'Рецепты'
+
+    def __str__(self):
+        return self.name
 
 
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        verbose_name='Рецепты'
+        verbose_name='Рецепт'
     )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
-        verbose_name='Ингредиенты'
+        verbose_name='Ингредиент'
     )
     amount = models.PositiveIntegerField(
         validators=[MinValueValidator(1)],
@@ -118,6 +121,8 @@ class Favorite(models.Model):
     )
 
     class Meta:
+        verbose_name = 'избранное'
+        verbose_name_plural = 'Избранное'
         unique_together = ['user', 'recipe']
 
 
@@ -136,22 +141,6 @@ class ShoppingCart(models.Model):
     )
 
     class Meta:
+        verbose_name = 'Список покупок'
+        verbose_name_plural = 'Список покупок'
         unique_together = ['user', 'recipe']
-
-
-class Subscription(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='subscriptions',
-        verbose_name='Пользователь'
-    )
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='subscribers',
-        verbose_name = 'Автор'
-    )
-
-    class Meta:
-        unique_together = ['user', 'author']
