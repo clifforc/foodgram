@@ -9,7 +9,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from .serializers import UserCreateSerializer, UserSerializer
+from .serializers import UserCreateSerializer, UserSerializer, UserSetPasswordSerializer
 from .pagination import CustomPagination
 
 User = get_user_model()
@@ -30,7 +30,21 @@ class UserViewSet(UserViewSet):
     def get_serializer_class(self):
         if self.action == 'create':
             return UserCreateSerializer
+        if self.action == 'set_password':
+            return UserSetPasswordSerializer
         return UserSerializer
+
+    @action(detail=False, methods=['POST'], permission_classes=[IsAuthenticated])
+    def set_password(self, request):
+        user = request.user
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            if not user.check_password(serializer.data.get("current_password")):
+                return Response({"current_password": ["Пароль не соответсвует текущему."]}, status=status.HTTP_400_BAD_REQUEST)
+            user.set_password(serializer.data.get("new_password"))
+            user.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False,
             methods=['PUT', 'PATCH', 'DELETE'],

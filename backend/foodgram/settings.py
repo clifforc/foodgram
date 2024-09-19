@@ -127,12 +127,14 @@ REST_FRAMEWORK = {
 }
 
 DJOSER = {
-    'USER_CREATE_PASSWORD_RETYPE': False,
-    'SERIALIZERS': {
-        'user_create': 'api.serializers.UserCreateSerializer',
-        'user': 'api.serializers.UserSerializer',
-        'current_user': 'api.serializers.UserSerializer',
-    },
+    # 'USER_CREATE_PASSWORD_RETYPE': False,
+    # 'SET_PASSWORD_RETYPE': True,
+    # 'SERIALIZERS': {
+    #     'user_create': 'api.serializers.UserCreateSerializer',
+    #     'user': 'api.serializers.UserSerializer',
+    #     'current_user': 'api.serializers.UserSerializer',
+    #     'set_password': 'api.serializers.UserSetPasswordSerializer',
+    # },
     'TOKEN_MODEL': 'rest_framework.authtoken.models.Token',
     'PERMISSIONS': {
         'user': ['rest_framework.permissions.AllowAny'],

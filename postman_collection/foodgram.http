@@ -976,6 +976,7 @@ Authorization: Token {{userToken}}
 %}
 
 ###
+@newPassword = "QazQaz121"
 # group: users / reset_password
 # @name reset_password // User
 POST {{baseUrl}}/api/users/set_password/

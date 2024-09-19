@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from djoser.serializers import UserCreateSerializer, UserSerializer
+from djoser.serializers import UserCreateSerializer, UserSerializer, SetPasswordSerializer
 from django.contrib.auth import get_user_model
 
 from users.models import Subscription
@@ -10,6 +10,7 @@ class UserCreateSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):
         model = User
         fields = ('id','username','first_name','last_name','email', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
 
 class UserSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField()
@@ -23,3 +24,7 @@ class UserSerializer(UserSerializer):
         if request and request.user.is_authenticated:
             return Subscription.objects.filter(user=request.user, author=obj).exists()
         return False
+
+class UserSetPasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
