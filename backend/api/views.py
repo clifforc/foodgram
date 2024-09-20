@@ -1,22 +1,25 @@
 import base64
-import os
 
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from djoser.views import UserViewSet
-from rest_framework import status
+from rest_framework import status, viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from .serializers import UserCreateSerializer, UserSerializer, UserSetPasswordSerializer
+from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
+                          CustomUserSetPasswordSerializer, TagSerializer,
+                          IngredientsSerializer)
 from .pagination import CustomPagination
+from recipes.models import Tag, Ingredient
+
 
 User = get_user_model()
 
 
-class UserViewSet(UserViewSet):
-    serializer_class = UserSerializer
+class CustomUserViewSet(UserViewSet):
+    serializer_class = CustomUserSerializer
     pagination_class = CustomPagination
 
     def get_permissions(self):
@@ -29,10 +32,10 @@ class UserViewSet(UserViewSet):
 
     def get_serializer_class(self):
         if self.action == 'create':
-            return UserCreateSerializer
+            return CustomUserCreateSerializer
         if self.action == 'set_password':
-            return UserSetPasswordSerializer
-        return UserSerializer
+            return CustomUserSetPasswordSerializer
+        return CustomUserSerializer
 
     @action(detail=False, methods=['POST'], permission_classes=[IsAuthenticated])
     def set_password(self, request):
@@ -72,3 +75,30 @@ class UserViewSet(UserViewSet):
         avatar.save(filename, data, save=True)
         return Response({'avatar': request.user.avatar.url},
                         status=status.HTTP_200_OK)
+
+
+class BaseReadOnlyViewset(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [AllowAny]
+
+    def list(self, request):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class TagViewSet(BaseReadOnlyViewset):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+
+
+class IngredientViewSet(BaseReadOnlyViewset):
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientsSerializer
+    search_fields = ['name']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        name = self.request.query_params.get('name')
+        if name:
+            queryset = queryset.filter(name__istartswith=name)
+        return queryset

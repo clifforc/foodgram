@@ -3,16 +3,19 @@ from djoser.serializers import UserCreateSerializer, UserSerializer, SetPassword
 from django.contrib.auth import get_user_model
 
 from users.models import Subscription
+from recipes.models import Tag, Ingredient
 
 User = get_user_model()
 
-class UserCreateSerializer(UserCreateSerializer):
+
+class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):
         model = User
         fields = ('id','username','first_name','last_name','email', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
-class UserSerializer(UserSerializer):
+
+class CustomUserSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta(UserSerializer.Meta):
@@ -25,6 +28,19 @@ class UserSerializer(UserSerializer):
             return Subscription.objects.filter(user=request.user, author=obj).exists()
         return False
 
-class UserSetPasswordSerializer(serializers.Serializer):
+
+class CustomUserSetPasswordSerializer(serializers.Serializer):
     current_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ('id', 'name', 'slug')
+
+
+class IngredientsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ingredient
+        fields = ('id', 'name', 'measurement_unit')

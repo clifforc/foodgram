@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import User
+from .models import CustomUser, Subscription
 
 
-@admin.register(User)
-class UserAdmin(UserAdmin):
+@admin.register(CustomUser)
+class CustomUserAdmin(UserAdmin):
     list_display = (
         'email',
         'username',
@@ -18,7 +18,7 @@ class UserAdmin(UserAdmin):
         'username'
     )
     fieldsets = (
-        (None, {'fields': ('username', 'email')}),
+        (None, {'fields': ('username', 'email', 'password')}),
         (
             'Персональная информация', {
                 'fields': ('first_name', 'last_name', 'avatar')
@@ -36,3 +36,11 @@ class UserAdmin(UserAdmin):
         }),
     )
     ordering = ('username',)
+
+
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = (
+        'user',
+        'author'
+    )
