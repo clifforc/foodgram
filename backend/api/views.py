@@ -10,9 +10,9 @@ from rest_framework.response import Response
 
 from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
                           CustomUserSetPasswordSerializer, TagSerializer,
-                          IngredientsSerializer)
+                          IngredientsSerializer, RecipeSerializer)
 from .pagination import CustomPagination
-from recipes.models import Tag, Ingredient
+from recipes.models import Tag, Ingredient, Recipe
 
 
 User = get_user_model()
@@ -102,3 +102,46 @@ class IngredientViewSet(BaseReadOnlyViewset):
         if name:
             queryset = queryset.filter(name__istartswith=name)
         return queryset
+
+
+class RecipeViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all().order_by('id')
+    serializer_class = RecipeSerializer
+    pagination_class = CustomPagination
+    permission_classes = [AllowAny]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['tags__slug']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        tags = self.request.query_params.getlist('tags')
+        if tags:
+            queryset = queryset.filter(tags__slug__in=tags).distinct()
+        return queryset.order_by('id')
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
+    def process_image(self, image_data):
+        if image_data and isinstance(image_data, str) and image_data.startswith('data:image'):
+            image_format, image_base64 = image_data.split(';base64,')
+            extension = image_format.split('/')[-1]
+            filename = f'recipe_image.{extension}'
+            return ContentFile(base64.b64decode(image_base64), name=filename)
+        return image_data
+
+    def create(self, request, *args, **kwargs):
+        image_data = request.data.get('image')
+        request.data['image'] = self.process_image(image_data)
+        return super().create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        image_data = request.data.get('image')
+        request.data['image'] = self.process_image(image_data)
+        return super().update(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
