@@ -108,9 +108,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all().order_by('id')
     serializer_class = RecipeSerializer
     pagination_class = CustomPagination
-    permission_classes = [AllowAny]
     filter_backends = [filters.SearchFilter]
     search_fields = ['tags__slug']
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAuthenticated()]
+        return [AllowAny()]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -133,7 +137,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe.short_link = short_id
         recipe.save()
         short_url = request.build_absolute_uri(f'/r/{short_id}')
-        return Response({'short_link': short_url}, status=status.HTTP_200_OK)
+        return Response({'short-link': short_url}, status=status.HTTP_200_OK)
 
 
     def process_image(self, image_data):
