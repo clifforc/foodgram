@@ -2,11 +2,13 @@ import base64
 
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
+from django.shortcuts import get_object_or_404, redirect
 from djoser.views import UserViewSet
 from rest_framework import status, viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+import shortuuid
 
 from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
                           CustomUserSetPasswordSerializer, TagSerializer,
@@ -70,9 +72,7 @@ class CustomUserViewSet(UserViewSet):
         extension = avatar_format.split('/')[-1]
         filename = f"{request.user.username}_avatar.{extension}"
         data = ContentFile(base64.b64decode(avatar_base64), name=filename)
-        if avatar:
-            avatar.delete()
-        avatar.save(filename, data, save=True)
+        avatar.save(filename, data)
         return Response({'avatar': request.user.avatar.url},
                         status=status.HTTP_200_OK)
 
@@ -124,6 +124,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
         context['request'] = self.request
         return context
 
+    @action(detail=True,
+            methods=['GET'],
+            url_path='get-link')
+    def get_short_link(self, request, pk=None):
+        recipe = get_object_or_404(Recipe, pk=pk)
+        short_id = shortuuid.uuid()[:8]
+        recipe.short_link = short_id
+        recipe.save()
+        short_url = request.build_absolute_uri(f'/r/{short_id}')
+        return Response({'short_link': short_url}, status=status.HTTP_200_OK)
+
+
     def process_image(self, image_data):
         if image_data and isinstance(image_data, str) and image_data.startswith('data:image'):
             image_format, image_base64 = image_data.split(';base64,')
@@ -145,3 +157,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
+
+def redirect_short_link(request, short_id):
+    recipe = get_object_or_404(Recipe, short_link=short_id)
+    return redirect('api:recipe-detail', pk=recipe.pk)

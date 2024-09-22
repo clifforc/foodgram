@@ -77,6 +77,13 @@ class Recipe(models.Model):
         validators=[MinValueValidator(1)],
         verbose_name='Время приготовления'
     )
+    short_link = models.CharField(
+        max_length=10,
+        blank=True,
+        null=True,
+        unique=True,
+        verbose_name='Короткая ссылка'
+    )
 
     class Meta:
         verbose_name = 'рецепт'
