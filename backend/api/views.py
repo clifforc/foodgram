@@ -92,7 +92,7 @@ class TagViewSet(BaseReadOnlyViewset):
 
 
 class IngredientViewSet(BaseReadOnlyViewset):
-    queryset = Ingredient.objects.all()
+    queryset = Ingredient.objects.all().order_by('id')
     serializer_class = IngredientsSerializer
     search_fields = ['name']
 
