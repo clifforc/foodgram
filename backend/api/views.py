@@ -119,8 +119,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         tags = self.request.query_params.getlist('tags')
+        author = self.request.query_params.get('author')
         if tags:
             queryset = queryset.filter(tags__slug__in=tags).distinct()
+        if author:
+            queryset = queryset.filter(author__id=author)
         return queryset.order_by('id')
 
     def get_serializer_context(self):

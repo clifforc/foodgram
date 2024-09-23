@@ -93,14 +93,14 @@ class RecipeSerializer(serializers.ModelSerializer):
     def validate_ingredients(self, value):
         if not value:
             raise serializers.ValidationError("Нужно добавить ингредиенты.")
-        # ingredient_ids = set()
-        # for ingredient in value:
-        #     ingredient_id = ingredient.get('id')
-        #     if ingredient_id in ingredient_ids:
-        #         raise serializers.ValidationError("Ингредиенты не должны повторяться.")
-        #     ingredient_ids.add(ingredient_id)
-        #     if not Ingredient.objects.filter(id=ingredient_id).exists():
-        #         raise serializers.ValidationError(f"Ингредиент не существует.")
+        ingredient_ids = set()
+        for ingredient in value:
+            ingredient_id = ingredient['ingredient']['id']
+            if ingredient_id in ingredient_ids:
+                raise serializers.ValidationError("Ингредиенты не должны повторяться.")
+            ingredient_ids.add(ingredient_id)
+            if not Ingredient.objects.filter(id=ingredient_id).exists():
+                raise serializers.ValidationError(f"Ингредиент не существует.")
         return value
 
     @transaction.atomic
