@@ -58,20 +58,18 @@ class IngredientsSerializer(serializers.ModelSerializer):
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='ingredient.id')
-    # amount = serializers.IntegerField()
-    # name = serializers.ReadOnlyField(source='ingredient.name')
-    # measurement_unit = serializers.ReadOnlyField(
-    #     source='ingredient.measurement_unit')
+    name = serializers.ReadOnlyField(source='ingredient.name')
+    measurement_unit = serializers.ReadOnlyField(
+        source='ingredient.measurement_unit')
 
     class Meta:
         model = RecipeIngredient
-        fields = ('id', 'amount')
-        # fields = ('id', 'name', 'measurement_unit', 'amount')
+        fields = ('id', 'name', 'measurement_unit', 'amount')
 
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
+    tags = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name')
     author = CustomUserSerializer(read_only=True)
     ingredients = RecipeIngredientSerializer(many=True, required=True, source='recipeingredient_set')
     is_favorited = serializers.SerializerMethodField()
@@ -108,10 +106,11 @@ class RecipeSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         ingredients_data = validated_data.pop('recipeingredient_set')
-        tags_data = validated_data.pop('tags')
+        tags_data = self.initial_data.get('tags', [])
         image_data = validated_data.pop('image')
 
         recipe = Recipe.objects.create(**validated_data)
+
         recipe.image.save(image_data.name, image_data, save=True)
 
         for ingredient_data in ingredients_data:
@@ -128,6 +127,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
+        representation['tags'] = TagSerializer(instance.tags.all(), many=True).data
         return representation
 
     def get_is_favorited(self, obj):
