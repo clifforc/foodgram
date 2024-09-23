@@ -17,8 +17,16 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
 
-class CustomUserSerializer(UserSerializer):
+class BaseCustomUserSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField()
+
+    def get_is_subscribed(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return Subscription.objects.filter(user=request.user, author=obj).exists()
+        return False
+
+class CustomUserSerializer(BaseCustomUserSerializer):
 
     class Meta(UserSerializer.Meta):
         model = User
@@ -32,11 +40,21 @@ class CustomUserSerializer(UserSerializer):
             'avatar'
         )
 
-    def get_is_subscribed(self, obj):
-        request = self.context.get('request')
-        if request and request.user.is_authenticated:
-            return Subscription.objects.filter(user=request.user, author=obj).exists()
-        return False
+class SubscriptionSerializer(BaseCustomUserSerializer):
+
+    class Meta(UserSerializer.Meta):
+        model = User
+        fields = (
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'is_subscribed',
+            'avatar',
+            'recipes_count',
+            'recipes'
+        )
 
 
 class CustomUserSetPasswordSerializer(serializers.Serializer):
