@@ -1,4 +1,5 @@
 import base64
+from wsgiref.simple_server import server_version
 
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
@@ -12,7 +13,8 @@ import shortuuid
 
 from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
                           CustomUserSetPasswordSerializer, TagSerializer,
-                          IngredientsSerializer, RecipeSerializer)
+                          IngredientsSerializer, RecipeSerializer,
+                          SubscriptionSerializer)
 from .pagination import CustomPagination
 from .permissions import IsAuthorOrReadOnly
 from recipes.models import Tag, Ingredient, Recipe
@@ -97,10 +99,23 @@ class CustomUserViewSet(UserViewSet):
 
         subscription, created = Subscription.objects.get_or_create(user=user, author=author)
         if created:
-            serializer = CustomUserSerializer(author, context={'request': request})
+            serializer = SubscriptionSerializer(author, context={'request': request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response("Вы уже подписаны на этого пользователя", status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=False,
+            methods=['GET'],
+            permission_classes=[IsAuthenticated])
+    def subscriptions(self, request):
+        user = request.user
+        queryset = User.objects.filter(subscribed_to__user=user)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = SubscriptionSerializer(page, many=True, context={'request': request})
+            return self.get_paginated_response(serializer.data)
+        serializer = SubscriptionSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data)
 
 class BaseReadOnlyViewset(viewsets.ReadOnlyModelViewSet):
     permission_classes = [AllowAny]

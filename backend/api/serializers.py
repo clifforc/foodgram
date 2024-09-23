@@ -41,6 +41,8 @@ class CustomUserSerializer(BaseCustomUserSerializer):
         )
 
 class SubscriptionSerializer(BaseCustomUserSerializer):
+    recipes_count = serializers.SerializerMethodField()
+    recipes = serializers.SerializerMethodField()
 
     class Meta(UserSerializer.Meta):
         model = User
@@ -56,6 +58,13 @@ class SubscriptionSerializer(BaseCustomUserSerializer):
             'recipes'
         )
 
+    def get_recipes(self, obj):
+        queryset = obj.recipes.all()
+        return RecipeSubscriptionSerializer(queryset, many=True).data
+
+
+    def get_recipes_count(self, obj):
+        return obj.recipes.count()
 
 class CustomUserSetPasswordSerializer(serializers.Serializer):
     current_password = serializers.CharField(required=True)
@@ -85,6 +94,10 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'measurement_unit', 'amount')
 
 
+class RecipeSubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        models = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 class RecipeSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
