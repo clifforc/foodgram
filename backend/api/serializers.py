@@ -142,7 +142,10 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         tags_data = validated_data.pop('tags', None)
-        ingredients_data = validated_data.pop('recipeingredient_set')
+        ingredients_data = validated_data.pop('recipeingredient_set', None)
+
+        self.validate_ingredients(ingredients_data)
+        self.validate_tags(tags_data)
 
         instance = super().update(instance, validated_data)
 
