@@ -125,6 +125,30 @@ class RecipeSerializer(serializers.ModelSerializer):
         recipe.tags.set(tags_data)
         return recipe
 
+
+    def update(self, instance, validated_data):
+        tags_data = self.initial_data.get('tags', [])
+        ingredients_data = validated_data.pop('recipeingredient_set')
+
+        instance = super().update(instance, validated_data)
+
+        if tags_data is not None:
+            instance.tags.set(tags_data)
+
+        if ingredients_data is not None:
+            instance.recipeingredient_set.all().delete()
+            for ingredient_data in ingredients_data:
+                ingredient_id: int = ingredient_data['ingredient']['id']
+                ingredient = Ingredient.objects.get(id=ingredient_id)
+                RecipeIngredient.objects.create(
+                    recipe=instance,
+                    ingredient=ingredient,
+                    amount=ingredient_data['amount']
+                )
+
+        return instance
+
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['tags'] = TagSerializer(instance.tags.all(), many=True).data
