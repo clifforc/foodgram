@@ -16,14 +16,14 @@ class RecipeAdmin(admin.ModelAdmin):
     list_filter = ['tags',]
     fieldsets = (
         (None, {'fields': ('name', 'author', 'tags')}),
-        ('Описание', {'fields': ('text', 'cooking_time')})
+        ('Описание', {'fields': ('text', 'cooking_time', 'image')})
     )
     inlines = [RecipeIngredientInline]
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
             'fields': ('name', 'author', 'tags', 'text',
-                       'cooking_time', 'ingredients')
+                       'cooking_time', 'ingredients', 'image')
         }),
     )
 

@@ -60,6 +60,10 @@ class SubscriptionSerializer(BaseCustomUserSerializer):
 
     def get_recipes(self, obj):
         queryset = obj.recipes.all()
+        limit = self.context.get('recipes_limit')
+        print(queryset)
+        if limit:
+            queryset = queryset[:int(limit)]
         return RecipeSubscriptionSerializer(queryset, many=True).data
 
 
@@ -96,7 +100,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 class RecipeSubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
-        models = Recipe
+        model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
 
 class RecipeSerializer(serializers.ModelSerializer):

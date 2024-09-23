@@ -64,13 +64,13 @@ class CustomUserViewSet(UserViewSet):
 
         if request.method == 'DELETE':
             if not avatar:
-                return Response({"error": "Аватар не найден"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response("Аватар не найден", status=status.HTTP_400_BAD_REQUEST)
             avatar.delete(save=True)
-            return Response({"message": "Аватар удалён"},status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
         avatar_data = request.data.get('avatar')
         if not avatar_data:
-            return Response({"error": "Отсутствует поле 'avatar'"},status=status.HTTP_400_BAD_REQUEST)
+            return Response("Отсутствует поле 'avatar'",status=status.HTTP_400_BAD_REQUEST)
 
         avatar_format, avatar_base64 = avatar_data.split(';base64,')
         extension = avatar_format.split('/')[-1]
@@ -99,7 +99,11 @@ class CustomUserViewSet(UserViewSet):
 
         subscription, created = Subscription.objects.get_or_create(user=user, author=author)
         if created:
-            serializer = SubscriptionSerializer(author, context={'request': request})
+            recipes_limit = request.query_params.get('recipes_limit')
+            serializer = SubscriptionSerializer(
+                author,
+                context={'request': request, 'recipes_limit': recipes_limit}
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response("Вы уже подписаны на этого пользователя", status=status.HTTP_400_BAD_REQUEST)
 
@@ -110,11 +114,19 @@ class CustomUserViewSet(UserViewSet):
         user = request.user
         queryset = User.objects.filter(subscribed_to__user=user)
 
+        recipes_limit = request.query_params.get('recipes_limit')
+
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = SubscriptionSerializer(page, many=True, context={'request': request})
+            serializer = SubscriptionSerializer(
+                page,
+                many=True,
+                context={'request': request, 'recipes_limit': recipes_limit})
             return self.get_paginated_response(serializer.data)
-        serializer = SubscriptionSerializer(queryset, many=True, context={'request': request})
+        serializer = SubscriptionSerializer(
+            page,
+            many=True,
+            context={'request': request, 'recipes_limit': recipes_limit})
         return Response(serializer.data)
 
 class BaseReadOnlyViewset(viewsets.ReadOnlyModelViewSet):
