@@ -69,7 +69,11 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    tags = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name')
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Tag.objects.all(),
+        required=True
+    )
     author = CustomUserSerializer(read_only=True)
     ingredients = RecipeIngredientSerializer(many=True, required=True, source='recipeingredient_set')
     is_favorited = serializers.SerializerMethodField()
@@ -103,10 +107,20 @@ class RecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(f"Ингредиент не существует.")
         return value
 
+    def validate_tags(self, value):
+        if not value:
+            raise serializers.ValidationError("Нужно добавить тег.")
+        tags = set()
+        for tag in value:
+            if tag in tags:
+                raise serializers.ValidationError("Тэги не должны повторяться.")
+            tags.add(tag)
+        return value
+
     @transaction.atomic
     def create(self, validated_data):
         ingredients_data = validated_data.pop('recipeingredient_set')
-        tags_data = self.initial_data.get('tags', [])
+        tags_data = validated_data.pop('tags')
         image_data = validated_data.pop('image')
 
         recipe = Recipe.objects.create(**validated_data)
@@ -127,7 +141,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance, validated_data):
-        tags_data = self.initial_data.get('tags', [])
+        tags_data = validated_data.pop('tags', None)
         ingredients_data = validated_data.pop('recipeingredient_set')
 
         instance = super().update(instance, validated_data)

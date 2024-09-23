@@ -14,6 +14,7 @@ from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
                           CustomUserSetPasswordSerializer, TagSerializer,
                           IngredientsSerializer, RecipeSerializer)
 from .pagination import CustomPagination
+from .permissions import IsAuthorOrReadOnly
 from recipes.models import Tag, Ingredient, Recipe
 
 
@@ -113,7 +114,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [IsAuthenticated()]
+            return [IsAuthenticated(), IsAuthorOrReadOnly()]
         return [AllowAny()]
 
     def get_queryset(self):
