@@ -7,7 +7,6 @@ from django.shortcuts import get_object_or_404, redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponse
 from djoser.views import UserViewSet
-from django.urls import reverse
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -161,7 +160,7 @@ class IngredientViewSet(BaseReadOnlyViewset):
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
-    queryset = Recipe.objects.all().order_by('id')
+    queryset = Recipe.objects.all().order_by('-created_at')
     serializer_class = RecipeSerializer
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend]

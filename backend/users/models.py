@@ -8,6 +8,10 @@ from foodgram import constants
 
 
 class CustomUser(AbstractUser):
+    """
+    Пользовательская модель, расширяющая стандартную модель AbstractUser.
+    Поле email используется вместо имени пользователя при входе на сайт.
+    """
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = (
@@ -61,6 +65,10 @@ class CustomUser(AbstractUser):
 User = get_user_model()
 
 class Subscription(models.Model):
+    """
+    Модель для представления подписки пользователя на автора.
+    """
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
