@@ -7,7 +7,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponse
 from djoser.views import UserViewSet
-from rest_framework import status, viewsets, filters
+from django.urls import reverse
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -163,7 +164,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all().order_by('id')
     serializer_class = RecipeSerializer
     pagination_class = CustomPagination
-    # filter_backends = [filters.SearchFilter]
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
     search_fields = ['tags__slug']
@@ -203,10 +203,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
             url_path='get-link')
     def get_short_link(self, request, pk=None):
         recipe = get_object_or_404(Recipe, pk=pk)
-        short_id = shortuuid.uuid()[:8]
-        recipe.short_link = short_id
-        recipe.save()
-        short_url = request.build_absolute_uri(f'/s/{short_id}')
+        if not recipe.short_link:
+            recipe.short_link = shortuuid.uuid()[:8]
+            recipe.save()
+        short_url = request.build_absolute_uri(f'/s/{recipe.short_link}')
         return Response({'short-link': short_url}, status=status.HTTP_200_OK)
 
     @action(detail=True,
@@ -307,4 +307,4 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 def redirect_short_link(request, short_id):
     recipe = get_object_or_404(Recipe, short_link=short_id)
-    return redirect('api:recipe-detail', pk=recipe.pk)
+    return redirect(f"/recipes/{recipe.id}")

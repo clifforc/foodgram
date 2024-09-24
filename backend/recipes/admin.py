@@ -15,7 +15,7 @@ class RecipeAdmin(admin.ModelAdmin):
     search_fields =['author','name',]
     list_filter = ['tags',]
     fieldsets = (
-        (None, {'fields': ('name', 'author', 'tags')}),
+        (None, {'fields': ('name', 'author', 'tags', 'short_link')}),
         ('Описание', {'fields': ('text', 'cooking_time', 'image')})
     )
     inlines = [RecipeIngredientInline]

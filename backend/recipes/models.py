@@ -78,7 +78,7 @@ class Recipe(models.Model):
         verbose_name='Время приготовления'
     )
     short_link = models.CharField(
-        max_length=10,
+        max_length=8,
         blank=True,
         null=True,
         unique=True,
