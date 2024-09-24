@@ -1,8 +1,8 @@
 import base64
-import csv
 
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
+from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponse
 from djoser.views import UserViewSet
@@ -18,7 +18,7 @@ from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
                           SubscriptionSerializer, RecipeMiniSerializer)
 from .pagination import CustomPagination
 from .permissions import IsAuthorOrReadOnly
-from recipes.models import Tag, Ingredient, Recipe, ShoppingCart
+from recipes.models import Tag, Ingredient, Recipe, ShoppingCart, RecipeIngredient
 from users.models import Subscription
 
 
@@ -98,7 +98,7 @@ class CustomUserViewSet(UserViewSet):
                 return Response(status=status.HTTP_204_NO_CONTENT)
             return Response("Вы не подписаны на этого пользователя", status=status.HTTP_400_BAD_REQUEST)
 
-        subscription, created = Subscription.objects.get_or_create(user=user, author=author)
+        _, created = Subscription.objects.get_or_create(user=user, author=author)
         if created:
             recipes_limit = request.query_params.get('recipes_limit')
             serializer = SubscriptionSerializer(
@@ -217,19 +217,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
             url_path='download_shopping_cart')
     def download_shopping_cart(self, request):
         user = request.user
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = f'attachment; filename="{user.username}_shopping_cart.csv"'
+        response = HttpResponse(content_type='text/plain')
+        response['Content-Disposition'] = f'attachment; filename="{user.username}_shopping_cart.txt"'
 
-        shopping_cart = ShoppingCart.objects.filter(user=user).select_related('recipe')
+        shopping_cart = ShoppingCart.objects.filter(user=user).values_list('recipe', flat=True)
 
-        writer = csv.writer(response)
-        writer.writerow(['id', 'name', 'cooking_time'])
-        for item in shopping_cart:
-            writer.writerow([
-                item.recipe.id,
-                item.recipe.name,
-                item.recipe.cooking_time
-                ])
+        igredients_sum = (((RecipeIngredient.objects.filter(recipe__in=shopping_cart)
+                          .values('ingredient__name', 'ingredient__measurement_unit'))
+                          .annotate(total_amount=Sum('amount')))
+                          .order_by('ingredient__name'))
+
+        for item in igredients_sum:
+            line = f"{item['ingredient__name']} ({item['ingredient__measurement_unit']}) - {item['total_amount']}\n"
+            response.write(line)
+
         return response
 
     def process_image(self, image_data):
