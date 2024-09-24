@@ -2,8 +2,9 @@ import base64
 
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
-from django.db.models import Sum
+from django.db.models import Exists, OuterRef, Sum
 from django.shortcuts import get_object_or_404, redirect
+from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponse
 from djoser.views import UserViewSet
 from rest_framework import status, viewsets, filters
@@ -18,6 +19,7 @@ from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
                           SubscriptionSerializer, RecipeMiniSerializer)
 from .pagination import CustomPagination
 from .permissions import IsAuthorOrReadOnly
+from .filters import RecipeFilter
 from recipes.models import Tag, Ingredient, Recipe, ShoppingCart, RecipeIngredient, Favorite
 from users.models import Subscription
 
@@ -161,7 +163,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all().order_by('id')
     serializer_class = RecipeSerializer
     pagination_class = CustomPagination
-    filter_backends = [filters.SearchFilter]
+    # filter_backends = [filters.SearchFilter]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = RecipeFilter
     search_fields = ['tags__slug']
 
     def get_permissions(self):
@@ -173,6 +177,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset()
         tags = self.request.query_params.getlist('tags')
         author = self.request.query_params.get('author')
+        user = self.request.user
+        if user.is_authenticated:
+            queryset = queryset.annotate(
+                is_in_shopping_cart=Exists(
+                    ShoppingCart.objects.filter(
+                        user=user,
+                        recipe=OuterRef('pk')
+                    )
+                )
+            )
         if tags:
             queryset = queryset.filter(tags__slug__in=tags).distinct()
         if author:
@@ -192,7 +206,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         short_id = shortuuid.uuid()[:8]
         recipe.short_link = short_id
         recipe.save()
-        short_url = request.build_absolute_uri(f'/{short_id}')
+        short_url = request.build_absolute_uri(f'/s/{short_id}')
         return Response({'short-link': short_url}, status=status.HTTP_200_OK)
 
     @action(detail=True,
@@ -206,14 +220,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if not user.is_authenticated:
             return Response("Необходимо войти на сайт или зарегистрироваться", status=status.HTTP_401_UNAUTHORIZED)
 
-        shopping_cart_item, created = ShoppingCart.objects.get_or_create(user=user, recipe=recipe)
-        print(shopping_cart_item)
         if request.method == 'DELETE':
-            if not shopping_cart_item:
-                return Response("Рецепт не найден", status=status.HTTP_400_BAD_REQUEST)
-            shopping_cart_item.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            try:
+                shopping_cart_item = ShoppingCart.objects.get(user=user, recipe=recipe)
+                shopping_cart_item.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            except ShoppingCart.DoesNotExist:
+                return Response("Рецепт не найден в корзине",
+                                status=status.HTTP_400_BAD_REQUEST)
 
+        _, created = ShoppingCart.objects.get_or_create(user=user, recipe=recipe)
         if created:
             serializer = RecipeMiniSerializer(recipe)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
