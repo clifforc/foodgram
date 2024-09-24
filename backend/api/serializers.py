@@ -64,7 +64,7 @@ class SubscriptionSerializer(BaseCustomUserSerializer):
         print(queryset)
         if limit:
             queryset = queryset[:int(limit)]
-        return RecipeSubscriptionSerializer(queryset, many=True).data
+        return RecipeMiniSerializer(queryset, many=True).data
 
 
     def get_recipes_count(self, obj):
@@ -98,7 +98,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'measurement_unit', 'amount')
 
 
-class RecipeSubscriptionSerializer(serializers.ModelSerializer):
+class RecipeMiniSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')

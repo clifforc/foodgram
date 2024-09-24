@@ -1,9 +1,10 @@
 import base64
-from wsgiref.simple_server import server_version
+import csv
 
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpResponse
 from djoser.views import UserViewSet
 from rest_framework import status, viewsets, filters
 from rest_framework.decorators import action
@@ -14,10 +15,10 @@ import shortuuid
 from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
                           CustomUserSetPasswordSerializer, TagSerializer,
                           IngredientsSerializer, RecipeSerializer,
-                          SubscriptionSerializer)
+                          SubscriptionSerializer, RecipeMiniSerializer)
 from .pagination import CustomPagination
 from .permissions import IsAuthorOrReadOnly
-from recipes.models import Tag, Ingredient, Recipe
+from recipes.models import Tag, Ingredient, Recipe, ShoppingCart
 from users.models import Subscription
 
 
@@ -191,9 +192,45 @@ class RecipeViewSet(viewsets.ModelViewSet):
         short_id = shortuuid.uuid()[:8]
         recipe.short_link = short_id
         recipe.save()
-        short_url = request.build_absolute_uri(f'/r/{short_id}')
+        short_url = request.build_absolute_uri(f'/{short_id}')
         return Response({'short-link': short_url}, status=status.HTTP_200_OK)
 
+    @action(detail=True,
+            methods=['POST'],
+            permission_classes=[IsAuthenticated],
+            url_path='shopping_cart')
+    def add_to_shopping_cart(self, request, pk=None):
+        user = request.user
+        recipe = get_object_or_404(Recipe, pk=pk)
+
+        if not user.is_authenticated:
+            return Response("Необходимо войти на сайт или зарегистрироваться", status=status.HTTP_401_UNAUTHORIZED)
+        _, created = ShoppingCart.objects.get_or_create(user=user, recipe=recipe)
+        if created:
+            serializer = RecipeMiniSerializer(recipe)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response("Рецепт уже добавлен в корзину", status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False,
+            methods=["GET"],
+            permission_classes=[IsAuthenticated],
+            url_path='download_shopping_cart')
+    def download_shopping_cart(self, request):
+        user = request.user
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="{user.username}_shopping_cart.csv"'
+
+        shopping_cart = ShoppingCart.objects.filter(user=user).select_related('recipe')
+
+        writer = csv.writer(response)
+        writer.writerow(['id', 'name', 'cooking_time'])
+        for item in shopping_cart:
+            writer.writerow([
+                item.recipe.id,
+                item.recipe.name,
+                item.recipe.cooking_time
+                ])
+        return response
 
     def process_image(self, image_data):
         if image_data and isinstance(image_data, str) and image_data.startswith('data:image'):
