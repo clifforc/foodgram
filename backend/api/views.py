@@ -18,7 +18,7 @@ from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
                           SubscriptionSerializer, RecipeMiniSerializer)
 from .pagination import CustomPagination
 from .permissions import IsAuthorOrReadOnly
-from recipes.models import Tag, Ingredient, Recipe, ShoppingCart, RecipeIngredient
+from recipes.models import Tag, Ingredient, Recipe, ShoppingCart, RecipeIngredient, Favorite
 from users.models import Subscription
 
 
@@ -196,16 +196,24 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response({'short-link': short_url}, status=status.HTTP_200_OK)
 
     @action(detail=True,
-            methods=['POST'],
+            methods=['POST','DELETE'],
             permission_classes=[IsAuthenticated],
             url_path='shopping_cart')
-    def add_to_shopping_cart(self, request, pk=None):
+    def shopping_cart(self, request, pk=None):
         user = request.user
         recipe = get_object_or_404(Recipe, pk=pk)
 
         if not user.is_authenticated:
             return Response("Необходимо войти на сайт или зарегистрироваться", status=status.HTTP_401_UNAUTHORIZED)
-        _, created = ShoppingCart.objects.get_or_create(user=user, recipe=recipe)
+
+        shopping_cart_item, created = ShoppingCart.objects.get_or_create(user=user, recipe=recipe)
+        print(shopping_cart_item)
+        if request.method == 'DELETE':
+            if not shopping_cart_item:
+                return Response("Рецепт не найден", status=status.HTTP_400_BAD_REQUEST)
+            shopping_cart_item.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
         if created:
             serializer = RecipeMiniSerializer(recipe)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -232,6 +240,32 @@ class RecipeViewSet(viewsets.ModelViewSet):
             response.write(line)
 
         return response
+
+    @action(detail=True,
+            methods=['POST','DELETE'],
+            permission_classes=[IsAuthenticated],
+            url_path='favorite')
+    def favorite(self, request, pk=None):
+        user = request.user
+        recipe = get_object_or_404(Recipe, pk=pk)
+
+        if not user.is_authenticated:
+            return Response("Необходимо войти на сайт или зарегистрироваться",
+                            status=status.HTTP_401_UNAUTHORIZED)
+
+        if request.method == 'DELETE':
+            favorite = Favorite.objects.filter(user=user, recipe=recipe)
+            if favorite.exists():
+                favorite.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response("Данного рецепта нет в избранном", status=status.HTTP_400_BAD_REQUEST)
+
+        _, created = Favorite.objects.get_or_create(user=user, recipe=recipe)
+        if created:
+            serializer = RecipeMiniSerializer(recipe)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response("Рецепт уже добавлен в избранное", status=status.HTTP_400_BAD_REQUEST)
+
 
     def process_image(self, image_data):
         if image_data and isinstance(image_data, str) and image_data.startswith('data:image'):
