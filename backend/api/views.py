@@ -1,7 +1,4 @@
-import base64
-
 from django.contrib.auth import get_user_model
-from django.core.files.base import ContentFile
 from django.db.models import Exists, OuterRef, Sum
 from django.shortcuts import get_object_or_404, redirect
 from django_filters.rest_framework import DjangoFilterBackend
@@ -82,7 +79,6 @@ class CustomUserViewSet(UserViewSet):
         user.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
     @action(detail=False,
             methods=['PUT', 'PATCH', 'DELETE'],
             permission_classes=[IsAuthenticated],
@@ -92,30 +88,26 @@ class CustomUserViewSet(UserViewSet):
         Управляет аватаром пользователя.
         """
 
-        avatar = request.user.avatar
+        user = request.user
 
         if request.method == 'DELETE':
-            if not avatar:
-                return Response("Аватар не найден",
-                                status=status.HTTP_400_BAD_REQUEST)
-            avatar.delete(save=True)
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            if user.avatar:
+                user.avatar.delete(save=True)
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response("Аватар не найден",
+                            status=status.HTTP_404_NOT_FOUND)
 
-        avatar_data = request.data.get('avatar')
-        if (avatar_data
-                and isinstance(avatar_data, str)
-                and avatar_data.startswith('data:image')):
-
-            avatar_format, avatar_base64 = avatar_data.split(';base64,')
-            extension = avatar_format.split('/')[-1]
-            filename = f"{request.user.username}_avatar.{extension}"
-            data = ContentFile(base64.b64decode(avatar_base64), name=filename)
-
-            avatar.save(filename, data)
-            return Response({'avatar': request.user.avatar.url},
-                            status=status.HTTP_200_OK)
+        if request.data.get('avatar'):
+            serializer = CustomUserSerializer(user, data=request.data,
+                                              partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({'avatar': serializer.data['avatar']})
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
         return Response("Отсутствует поле 'avatar'",
                         status=status.HTTP_400_BAD_REQUEST)
+
 
     @action(detail=True,
             methods=['POST', 'DELETE'],
@@ -383,40 +375,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response("Рецепт уже добавлен в избранное",
                         status=status.HTTP_400_BAD_REQUEST)
 
-
-    def process_image(self, image_data):
-        """
-        Обрабатывает данные изображения, преобразуя base64 в ContentFile.
-        """
-
-        if (image_data
-                and isinstance(image_data, str)
-                and image_data.startswith('data:image')):
-
-            image_format, image_base64 = image_data.split(';base64,')
-            extension = image_format.split('/')[-1]
-            filename = f'recipe_image.{extension}'
-
-            return ContentFile(base64.b64decode(image_base64), name=filename)
-        return image_data
-
-    def create(self, request, *args, **kwargs):
-        """
-        Создает новый рецепт, обрабатывая данные изображения.
-        """
-
-        image_data = request.data.get('image')
-        request.data['image'] = self.process_image(image_data)
-        return super().create(request, *args, **kwargs)
-
-    def update(self, request, *args, **kwargs):
-        """
-        Обновляет существующий рецепт, обрабатывая данные изображения.
-        """
-
-        image_data = request.data.get('image')
-        request.data['image'] = self.process_image(image_data)
-        return super().update(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         """
