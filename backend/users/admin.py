@@ -12,17 +12,8 @@ class CustomUserAdmin(UserAdmin):
     Настройки интерфейса администратора для модели CustomUser.
     """
 
-    list_display = (
-        'email',
-        'username',
-        'is_active',
-        'is_staff',
-        'is_superuser'
-    )
-    search_fields = (
-        'email',
-        'username'
-    )
+    list_display = ('email','username','is_active','is_staff','is_superuser')
+    search_fields = ('email','username')
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
         ('Персональная информация',
@@ -105,7 +96,4 @@ class SubscriptionAdmin(admin.ModelAdmin):
     Настройки интерфейса администратора для модели Subscription.
     """
 
-    list_display = (
-        'user',
-        'author'
-    )
+    list_display = ('user','author')
