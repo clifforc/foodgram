@@ -24,7 +24,7 @@ class RecipeAdmin(admin.ModelAdmin):
     list_filter = ['tags',]
     inlines = [RecipeIngredientInline]
     fieldsets = (
-        (None, {'fields': ('name', 'author', 'tags', 'short_link')}),
+        (None, {'fields': ('name', 'author', 'tags')}),
         ('Описание', {'fields': ('text', 'cooking_time', 'image')})
     )
     add_fieldsets = (
@@ -37,7 +37,6 @@ class RecipeAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.ManyToManyField: {'widget': CheckboxSelectMultiple},
     }
-    readonly_fields = ('short_link',)
 
     def favorite_count(self, obj: Recipe) -> int:
         """

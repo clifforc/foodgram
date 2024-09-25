@@ -12,6 +12,10 @@ User = get_user_model()
 class Ingredient(models.Model):
     """
     Модель для представления ингредиентов.
+
+    Attributes:
+        name (CharField): Наименование ингредиента.
+        measurement_unit (CharField): Единица измерения.
     """
 
     name = models.CharField(
@@ -34,6 +38,10 @@ class Ingredient(models.Model):
 class Tag(models.Model):
     """
     Модель для представления тэгов.
+
+    Attributes:
+        name (CharField): Наименование тега.
+        slug (SlugField): Слаг тега.
     """
 
     name = models.CharField(
@@ -58,6 +66,20 @@ class Tag(models.Model):
 class Recipe(models.Model):
     """
     Модель для представления рецептов.
+
+    Эта модель хранит информацию о кулинарных рецептах, включая их ингредиенты,
+    время приготовления, автора и связанные теги.
+
+    Attributes:
+        tags (ManyToManyField): Связь многие-ко-многим с моделью Tag.
+        author (ForeignKey): Ссылка на пользователя, создавшего рецепт.
+        ingredients (ManyToManyField): : Связь многие-ко-многим с моделью Ingredient через промежуточную модель RecipeIngredient.
+        name (CharField): Название рецепта.
+        image (ImageField): Изображение рецепта.
+        text (TextField): Текстовое описание рецепта.
+        cooking_time (PositiveIntegerField): Время приготовления.
+        short_link (CharField): Уникальная короткая ссылка для доступа к рецепту.
+        created_at (DateTimeField): Дата и время создания рецепта.
     """
 
     tags = models.ManyToManyField(
@@ -103,6 +125,9 @@ class Recipe(models.Model):
     def get_or_create_short_link(self):
         """
         Возвращает существующую короткую ссылку или создает новую.
+
+        Returns:
+            str: Короткая ссылка для рецепта.
         """
 
         if not self.short_link:
@@ -121,6 +146,13 @@ class Recipe(models.Model):
 class RecipeIngredient(models.Model):
     """
     Модель для представления связи между моделями рецептов и ингредиентов.
+
+    Эта модель позволяет указать количество ингредиента, необходимого для приготовления рецепта.
+
+    Attributes:
+        recipe (ForeignKey): Связь с моделью Recipe.
+        ingredient (ForeignKey): Связь с моделью Ingredient.
+        amount (PositiveIntegerField): Количество ингредиента, необходимое для рецепта.
     """
 
     recipe = models.ForeignKey(
@@ -142,12 +174,21 @@ class RecipeIngredient(models.Model):
         unique_together = ['recipe', 'ingredient']
 
     def __str__(self):
-        return f"{self.ingredient.name} - {self.amount} {self.ingredient.measurement_unit}"
+        return (f"{self.ingredient.name} - "
+                f"{self.amount} "
+                f"{self.ingredient.measurement_unit}")
 
 
 class Favorite(models.Model):
     """
     Модель для представления избранных рецептов пользователя.
+
+    Эта модель позволяет пользователям отмечать рецепты как избранные,
+    создавая связь между пользователем и рецептом.
+
+    Attributes:
+        user (ForeignKey): Связь с моделью User.
+        recipe (ForeignKey): Связь с моделью Recipe.
     """
 
     user = models.ForeignKey(
@@ -174,6 +215,13 @@ class Favorite(models.Model):
 class ShoppingCart(models.Model):
     """
     Модель для представления списка покупок пользователя.
+
+    Эта модель позволяет пользователям добавлять рецепты в список покупок,
+    чтобы потом использовать для составления списка необходимых ингредиентов.
+
+    Attributes:
+        user (ForeignKey): Связь с моделью User.
+        recipe (ForeignKey): Связь с моделью Recipe.
     """
 
     user = models.ForeignKey(
