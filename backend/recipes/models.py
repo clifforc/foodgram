@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
+import shortuuid
 
 from foodgram import constants
 
@@ -9,6 +10,10 @@ User = get_user_model()
 
 
 class Ingredient(models.Model):
+    """
+    Модель для представления ингредиентов.
+    """
+
     name = models.CharField(
         max_length=constants.INGREDIENT_NAME_MAX_LENGTH,
         verbose_name='Наименование'
@@ -27,6 +32,10 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
+    """
+    Модель для представления тэгов.
+    """
+
     name = models.CharField(
         max_length=constants.TAG_MAX_LENGTH,
         unique=True,
@@ -47,6 +56,10 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
+    """
+    Модель для представления рецептов.
+    """
+
     tags = models.ManyToManyField(
         Tag,
         related_name='recipes',
@@ -79,13 +92,23 @@ class Recipe(models.Model):
         verbose_name='Время приготовления'
     )
     short_link = models.CharField(
-        max_length=8,
+        max_length=10,
         blank=True,
         null=True,
         unique=True,
         verbose_name='Короткая ссылка'
     )
     created_at = models.DateTimeField(default=timezone.now)
+
+    def get_or_create_short_link(self):
+        """
+        Возвращает существующую короткую ссылку или создает новую.
+        """
+
+        if not self.short_link:
+            self.short_link = shortuuid.uuid()[:8]
+            self.save(update_fields=['short_link'])
+        return self.short_link
 
     class Meta:
         verbose_name = 'рецепт'
@@ -96,6 +119,10 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
+    """
+    Модель для представления связи между моделями рецептов и ингредиентов.
+    """
+
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
@@ -114,8 +141,15 @@ class RecipeIngredient(models.Model):
     class Meta:
         unique_together = ['recipe', 'ingredient']
 
+    def __str__(self):
+        return f"{self.ingredient.name} - {self.amount} {self.ingredient.measurement_unit}"
+
 
 class Favorite(models.Model):
+    """
+    Модель для представления избранных рецептов пользователя.
+    """
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -134,8 +168,14 @@ class Favorite(models.Model):
         verbose_name_plural = 'Избранное'
         unique_together = ['user', 'recipe']
 
+    def __str__(self):
+        return f'{self.recipe.name} в избранном у {self.user.username}'
 
 class ShoppingCart(models.Model):
+    """
+    Модель для представления списка покупок пользователя.
+    """
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -153,3 +193,6 @@ class ShoppingCart(models.Model):
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Список покупок'
         unique_together = ['user', 'recipe']
+
+    def __str__(self):
+        return f'{self.recipe.name} в корзине у {self.user.username}'

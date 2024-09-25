@@ -201,11 +201,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             methods=['GET'],
             url_path='get-link')
     def get_short_link(self, request, pk=None):
-        recipe = get_object_or_404(Recipe, pk=pk)
-        if not recipe.short_link:
-            recipe.short_link = shortuuid.uuid()[:8]
-            recipe.save()
-        short_url = request.build_absolute_uri(f'/s/{recipe.short_link}')
+        recipe = self.get_object()
+        short_link = recipe.get_or_create_short_link()
+        short_url = request.build_absolute_uri(f'/s/{short_link}')
         return Response({'short-link': short_url}, status=status.HTTP_200_OK)
 
     @action(detail=True,

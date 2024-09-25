@@ -7,18 +7,18 @@ from .models import (Ingredient, Tag, Recipe, Favorite, RecipeIngredient,
 
 class RecipeIngredientInline(admin.TabularInline):
     model = RecipeIngredient
-    extra = 1
+    extra = 0
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('name','author','favorite_count', 'get_tags',)
-    search_fields =['author','name',]
+    search_fields =['author__username','name',]
     list_filter = ['tags',]
+    inlines = [RecipeIngredientInline]
     fieldsets = (
         (None, {'fields': ('name', 'author', 'tags', 'short_link')}),
         ('Описание', {'fields': ('text', 'cooking_time', 'image')})
     )
-    inlines = [RecipeIngredientInline]
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
@@ -26,7 +26,6 @@ class RecipeAdmin(admin.ModelAdmin):
                        'cooking_time', 'ingredients', 'image')
         }),
     )
-
     formfield_overrides = {
         models.ManyToManyField: {'widget': CheckboxSelectMultiple},
     }
@@ -38,6 +37,8 @@ class RecipeAdmin(admin.ModelAdmin):
     def get_tags(self, obj):
         return ", ".join([tag.name for tag in obj.tags.all()])
     get_tags.short_description = 'Теги'
+
+    readonly_fields = ('short_link',)
 
 @admin.register(Ingredient)
 class  IngredientAdmin(admin.ModelAdmin):
