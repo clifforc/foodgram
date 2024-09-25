@@ -7,8 +7,10 @@ def validate_username_not_me(value: str) -> None:
     """
     Проверяем что username не является запрещенным.
 
-    :param value: Имя пользователя.
-    :raise ValidationError: Если имя пользователя использовать запрещено.
+    Args:
+        value (str): Имя пользователя для проверки.
+    Raises:
+        ValidationError: Если имя пользователя совпадает с запрещенным значением.
     """
 
     if value == constants.NOT_ALLOWED_USERNAME:

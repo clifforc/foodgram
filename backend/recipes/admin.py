@@ -5,13 +5,17 @@ from django.forms import CheckboxSelectMultiple
 from .models import (Ingredient, Tag, Recipe, Favorite, RecipeIngredient,
                      ShoppingCart)
 
+
 class RecipeIngredientInline(admin.TabularInline):
     """
-    Дескриптор для модели RecipeIngredient.
+    Интерфейс для модели RecipeIngredient.
+
+    Позволяет редактировать ингредиенты рецепта непосредственно в форме рецепта.
     """
 
     model = RecipeIngredient
     extra = 0
+
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
@@ -42,12 +46,22 @@ class RecipeAdmin(admin.ModelAdmin):
         """
         Получить количество раз, когда рецепт был добавлен в избранное.
 
-        :param obj: Экземпляр модели Recipe.
-        :return: Количество добавлений в избранное.
+        Args:
+            obj (Recipe): Экземпляр модели Recipe.
+        Returns:
+            int: Количество добавлений в избранное.
         """
         return Favorite.objects.filter(recipe=obj).count()
 
-    def get_tags(self, obj):
+    def get_tags(self, obj: Recipe) -> str:
+        """
+        Получить теги рецепта в виде строки.
+
+        Args:
+            obj (Recipe): Экземпляр модели Recipe.
+        Returns:
+            str: Строка с перечислением тегов рецепта.
+        """
         return ", ".join([tag.name for tag in obj.tags.all()])
 
     favorite_count.short_descriptrion = 'В избранном'
@@ -81,6 +95,7 @@ class FavoriteAdmin(admin.ModelAdmin):
     """
 
     list_display = ('user', 'recipe')
+
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):

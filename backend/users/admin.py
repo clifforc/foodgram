@@ -38,10 +38,14 @@ class CustomUserAdmin(UserAdmin):
 
     def get_subscriptions(self, obj: CustomUser) -> str:
         """
-        Получить подписки пользователя.
+        Получить список подписок пользователя.
 
-        :param obj: Объект пользователя.
-        :return: Ссылка на автора, на которого подписан пользователь, или сообщение об отсутствии подписок.
+        Args:
+            obj (CustomUser): Объект пользователя.
+
+        Returns:
+            str: HTML-строка со ссылками на авторов, на которых подписан пользователь,
+                 или сообщение об отсутствии подписок.
         """
 
         subscriptions = Subscription.objects.filter(user=obj)
@@ -54,10 +58,14 @@ class CustomUserAdmin(UserAdmin):
 
     def get_recipes(self, obj: CustomUser) -> str:
         """
-        Получить рецепты пользователя.
+        Получить список рецептов пользователя.
 
-        :param obj: Объект пользователя.
-        :return: Ссылка на рецепт пользователя, или сообщение об отсутствии рецептов.
+        Args:
+            obj (CustomUser): Объект пользователя.
+
+        Returns:
+            str: HTML-строка со ссылками на рецепты пользователя,
+                 или сообщение об отсутствии рецептов.
         """
 
         recipes = Recipe.objects.filter(author=obj)
@@ -70,10 +78,14 @@ class CustomUserAdmin(UserAdmin):
 
     def get_favorited_recipes(self, obj: CustomUser) -> str:
         """
-        Получить избранные рецепты пользователя.
+        Получить список избранных рецептов пользователя.
 
-        :param obj: Объект пользователя.
-        :return: Ссылка на избранный рецепт пользователя, или сообщение об отсутствии избранных рецептов.
+        Args:
+            obj (CustomUser): Объект пользователя.
+
+        Returns:
+            str: HTML-строка со ссылками на избранные рецепты пользователя,
+                 или сообщение об отсутствии избранных рецептов.
         """
 
         favorited_recipes = Favorite.objects.filter(user=obj)
