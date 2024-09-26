@@ -15,9 +15,7 @@ services:
 
   backend:
     container_name: foodgram-back
-    build:
-      context: ..
-      dockerfile: ./backend/Dockerfile
+    image: clifforc/foodgram_backend
     env_file:
       - ../.env
     volumes:
@@ -28,7 +26,7 @@ services:
 
   frontend:
     container_name: foodgram-front
-    build: ../frontend
+    image: clifforc/foodgram_frontend
     volumes:
       - static:/app/build/
 

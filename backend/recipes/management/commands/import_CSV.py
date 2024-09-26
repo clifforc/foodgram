@@ -1,7 +1,16 @@
 import csv
 
+from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
-from recipes.models import Ingredient
+
+from recipes.models import Ingredient, Tag
+
+
+DIRECTORY = '../data/'
+User = get_user_model()
+NAMES_FILE = {
+    'ingredients.csv': "self.ingredients(csv_reader)",
+}
 
 
 class Command(BaseCommand):
@@ -19,7 +28,9 @@ class Command(BaseCommand):
             )
 
     def handle(self, *args, **kwargs):
-        csv_file_path = '../data/ingredients.csv'
+        file_name = kwargs['csv_file']
+        csv_file_path = DIRECTORY + file_name
         with open(csv_file_path, 'r', encoding="utf-8") as file:
-            csv_reader = csv.reader(file)
-            self.ingredients(csv_reader)
+            csv_reader = csv.DictReader(file)
+            if csv_reader is not None:
+                exec(NAMES_FILE[file_name])
