@@ -9,17 +9,15 @@ services:
   db:
     image: postgres:13.10
     env_file:
-      - ../.env
+      - .env
     volumes:
       - pg_data:/var/lib/postgresql/data
 
   backend:
     container_name: foodgram-back
-    build:
-      context: ..
-      dockerfile: ./backend/Dockerfile
+    image: clifforc/foodgram_backend
     env_file:
-      - ../.env
+      - .env
     volumes:
       - static:/backend_static
       - media:/app/media
@@ -30,15 +28,13 @@ services:
 
   frontend:
     container_name: foodgram-front
-    build: ../frontend
+    image: clifforc/foodgram_frontend
     volumes:
       - static:/app/build/
 
   nginx:
     container_name: foodgram-proxy
-    build:
-      context: ..
-      dockerfile: ./nginx/Dockerfile
+    image: clifforc/foodgram_nginx
     ports:
       - "8080:80"
     volumes:
