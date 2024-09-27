@@ -70,12 +70,14 @@ class Recipe(models.Model):
     Attributes:
         tags (ManyToManyField): Связь многие-ко-многим с моделью Tag.
         author (ForeignKey): Ссылка на пользователя, создавшего рецепт.
-        ingredients (ManyToManyField): : Связь многие-ко-многим с моделью Ingredient через промежуточную модель RecipeIngredient.
+        ingredients (ManyToManyField): : Связь многие-ко-многим с моделью
+            Ingredient через промежуточную модель RecipeIngredient.
         name (CharField): Название рецепта.
         image (ImageField): Изображение рецепта.
         text (TextField): Текстовое описание рецепта.
         cooking_time (PositiveIntegerField): Время приготовления.
-        short_link (CharField): Уникальная короткая ссылка для доступа к рецепту.
+        short_link (CharField): Уникальная короткая ссылка для доступа
+            к рецепту.
         created_at (DateTimeField): Дата и время создания рецепта.
     """
 
@@ -130,12 +132,14 @@ class RecipeIngredient(models.Model):
     """
     Модель для представления связи между моделями рецептов и ингредиентов.
 
-    Эта модель позволяет указать количество ингредиента, необходимого для приготовления рецепта.
+    Эта модель позволяет указать количество ингредиента, необходимого
+    для приготовления рецепта.
 
     Attributes:
         recipe (ForeignKey): Связь с моделью Recipe.
         ingredient (ForeignKey): Связь с моделью Ingredient.
-        amount (PositiveIntegerField): Количество ингредиента, необходимое для рецепта.
+        amount (PositiveIntegerField): Количество ингредиента, необходимое
+            для рецепта.
     """
 
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,

@@ -4,6 +4,12 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+
+from users.models import Subscription
 from recipes.models import (
     Favorite,
     Ingredient,
@@ -12,12 +18,6 @@ from recipes.models import (
     ShoppingCart,
     Tag,
 )
-from rest_framework import status, viewsets
-from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
-from users.models import Subscription
-
 from .filters import RecipeFilter
 from .pagination import CustomPagination
 from .permissions import IsAuthorOrReadOnly
@@ -349,7 +349,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def download_shopping_cart(self, request):
         """
-        Формирует и возвращает список покупок для рецептов в корзине пользователя.
+        Формирует и возвращает список покупок для рецептов в корзине
+        пользователя.
         """
 
         user = request.user
@@ -417,7 +418,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """
-        Выполняет создание рецепта, устанавливая текущего пользователя как автора.
+        Выполняет создание рецепта, устанавливая текущего пользователя
+        как автора.
         """
 
         serializer.save(author=self.request.user)
