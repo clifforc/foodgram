@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.safestring import mark_safe
-from recipes.models import Favorite, Recipe
 
+from ..recipes.models import Favorite, Recipe
 from .models import CustomUser, Subscription
 
 

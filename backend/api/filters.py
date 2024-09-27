@@ -1,5 +1,6 @@
 from django_filters.rest_framework import BooleanFilter, FilterSet
-from recipes.models import Recipe
+
+from ..recipes.models import Recipe
 
 
 class RecipeFilter(FilterSet):
