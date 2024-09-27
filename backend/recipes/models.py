@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
-from foodgram import constants
+
+from ..foodgram import constants
 
 User = get_user_model()
 

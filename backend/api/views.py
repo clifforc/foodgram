@@ -9,28 +9,17 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from users.models import Subscription
-from recipes.models import (
-    Favorite,
-    Ingredient,
-    Recipe,
-    RecipeIngredient,
-    ShoppingCart,
-    Tag,
-)
+from ..recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                              ShoppingCart, Tag)
+from ..users.models import Subscription
 from .filters import RecipeFilter
 from .pagination import CustomPagination
 from .permissions import IsAuthorOrReadOnly
-from .serializers import (
-    CustomUserCreateSerializer,
-    CustomUserSerializer,
-    CustomUserSetPasswordSerializer,
-    IngredientsSerializer,
-    RecipeMiniSerializer,
-    RecipeSerializer,
-    SubscriptionSerializer,
-    TagSerializer,
-)
+from .serializers import (CustomUserCreateSerializer, CustomUserSerializer,
+                          CustomUserSetPasswordSerializer,
+                          IngredientsSerializer, RecipeMiniSerializer,
+                          RecipeSerializer, SubscriptionSerializer,
+                          TagSerializer)
 
 User = get_user_model()
 
