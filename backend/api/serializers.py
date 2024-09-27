@@ -6,9 +6,15 @@ from django.db import transaction
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 
-from ..recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
-                              ShoppingCart, Tag)
-from ..users.models import Subscription
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingCart,
+    Tag,
+)
+from users.models import Subscription
 
 User = get_user_model()
 

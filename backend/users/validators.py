@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 
-from ..foodgram import constants
+from foodgram import constants
 
 
 def validate_username_not_me(value: str) -> None:
