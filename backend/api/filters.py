@@ -1,6 +1,6 @@
 from django_filters.rest_framework import BooleanFilter, FilterSet
-
 from recipes.models import Recipe
+
 
 class RecipeFilter(FilterSet):
     """
@@ -11,12 +11,12 @@ class RecipeFilter(FilterSet):
     - наличие в избранном текущего пользователя
     """
 
-    is_in_shopping_cart = BooleanFilter(method='filter_is_in_shopping_cart')
-    is_favorited = BooleanFilter(method='filter_is_favorited')
+    is_in_shopping_cart = BooleanFilter(method="filter_is_in_shopping_cart")
+    is_favorited = BooleanFilter(method="filter_is_favorited")
 
     class Meta:
         model = Recipe
-        fields = ['is_in_shopping_cart', 'is_favorited']
+        fields = ["is_in_shopping_cart", "is_favorited"]
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
         """

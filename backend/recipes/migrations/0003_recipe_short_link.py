@@ -6,13 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0002_initial'),
+        ("recipes", "0002_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='recipe',
-            name='short_link',
-            field=models.CharField(blank=True, max_length=10, null=True, unique=True, verbose_name='Короткая ссылка'),
+            model_name="recipe",
+            name="short_link",
+            field=models.CharField(
+                blank=True,
+                max_length=10,
+                null=True,
+                unique=True,
+                verbose_name="Короткая ссылка",
+            ),
         ),
     ]
