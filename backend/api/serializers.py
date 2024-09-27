@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.db import transaction
 from djoser.serializers import UserCreateSerializer, UserSerializer
+from rest_framework import serializers
+
 from recipes.models import (
     Favorite,
     Ingredient,
@@ -12,7 +14,6 @@ from recipes.models import (
     ShoppingCart,
     Tag,
 )
-from rest_framework import serializers
 from users.models import Subscription
 
 User = get_user_model()
@@ -224,7 +225,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                     "Ингредиенты не должны повторяться.")
             ingredient_ids.add(ingredient_id)
             if not Ingredient.objects.filter(id=ingredient_id).exists():
-                raise serializers.ValidationError(f"Ингредиент не существует.")
+                raise serializers.ValidationError("Ингредиент не существует.")
         return value
 
     def validate_tags(self, value):

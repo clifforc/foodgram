@@ -3,7 +3,8 @@ from rest_framework import permissions
 
 class IsAuthorOrReadOnly(permissions.BasePermission):
     """
-    Разрешение на уровне объекта, позволяющее только владельцам объекта редактировать его.
+    Разрешение на уровне объекта, позволяющее только владельцам объекта
+    редактировать его.
     """
 
     def has_object_permission(self, request, view, obj):

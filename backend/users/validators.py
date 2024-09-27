@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+
 from foodgram import constants
 
 
@@ -9,7 +10,8 @@ def validate_username_not_me(value: str) -> None:
     Args:
         value (str): Имя пользователя для проверки.
     Raises:
-        ValidationError: Если имя пользователя совпадает с запрещенным значением.
+        ValidationError: Если имя пользователя совпадает с запрещенным
+            значением.
     """
 
     if value == constants.NOT_ALLOWED_USERNAME:

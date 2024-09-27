@@ -55,8 +55,8 @@ class CustomUserAdmin(UserAdmin):
             obj (CustomUser): Объект пользователя.
 
         Returns:
-            str: HTML-строка со ссылками на авторов, на которых подписан пользователь,
-                 или сообщение об отсутствии подписок.
+            str: HTML-строка со ссылками на авторов, на которых подписан
+                 пользователь, или сообщение об отсутствии подписок.
         """
 
         subscriptions = Subscription.objects.filter(user=obj)
