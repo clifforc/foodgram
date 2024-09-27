@@ -2,8 +2,7 @@ from django.contrib import admin
 from django.db import models
 from django.forms import CheckboxSelectMultiple
 
-from .models import (Ingredient, Tag, Recipe, Favorite, RecipeIngredient,
-                     ShoppingCart)
+from .models import Favorite, Ingredient, Recipe, RecipeIngredient, ShoppingCart, Tag
 
 
 class RecipeIngredientInline(admin.TabularInline):
@@ -23,23 +22,43 @@ class RecipeAdmin(admin.ModelAdmin):
     Настройки интерфейса администратора для модели Recipe.
     """
 
-    list_display = ('name','author','favorite_count', 'get_tags',)
-    search_fields =['author__username','name',]
-    list_filter = ['tags',]
+    list_display = (
+        "name",
+        "author",
+        "favorite_count",
+        "get_tags",
+    )
+    search_fields = [
+        "author__username",
+        "name",
+    ]
+    list_filter = [
+        "tags",
+    ]
     inlines = [RecipeIngredientInline]
     fieldsets = (
-        (None, {'fields': ('name', 'author', 'tags')}),
-        ('Описание', {'fields': ('text', 'cooking_time', 'image')})
+        (None, {"fields": ("name", "author", "tags")}),
+        ("Описание", {"fields": ("text", "cooking_time", "image")}),
     )
     add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('name', 'author', 'tags', 'text',
-                       'cooking_time', 'ingredients', 'image')
-        }),
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": (
+                    "name",
+                    "author",
+                    "tags",
+                    "text",
+                    "cooking_time",
+                    "ingredients",
+                    "image",
+                ),
+            },
+        ),
     )
     formfield_overrides = {
-        models.ManyToManyField: {'widget': CheckboxSelectMultiple},
+        models.ManyToManyField: {"widget": CheckboxSelectMultiple},
     }
 
     def favorite_count(self, obj: Recipe) -> int:
@@ -64,18 +83,23 @@ class RecipeAdmin(admin.ModelAdmin):
         """
         return ", ".join([tag.name for tag in obj.tags.all()])
 
-    favorite_count.short_descriptrion = 'В избранном'
-    get_tags.short_description = 'Теги'
+    favorite_count.short_descriptrion = "В избранном"
+    get_tags.short_description = "Теги"
 
 
 @admin.register(Ingredient)
-class  IngredientAdmin(admin.ModelAdmin):
+class IngredientAdmin(admin.ModelAdmin):
     """
     Настройки интерфейса администратора для модели Ingredient.
     """
 
-    list_display = ('name','measurement_unit',)
-    search_fields = ['name',]
+    list_display = (
+        "name",
+        "measurement_unit",
+    )
+    search_fields = [
+        "name",
+    ]
 
 
 @admin.register(Tag)
@@ -84,8 +108,10 @@ class TagAdmin(admin.ModelAdmin):
     Настройки интерфейса администратора для модели Tag.
     """
 
-    list_display = ('name','slug')
-    search_fields = ['name',]
+    list_display = ("name", "slug")
+    search_fields = [
+        "name",
+    ]
 
 
 @admin.register(Favorite)
@@ -94,7 +120,7 @@ class FavoriteAdmin(admin.ModelAdmin):
     Настройки интерфейса администратора для модели Favorite.
     """
 
-    list_display = ('user', 'recipe')
+    list_display = ("user", "recipe")
 
 
 @admin.register(ShoppingCart)
@@ -103,4 +129,4 @@ class ShoppingCartAdmin(admin.ModelAdmin):
     Настройки интерфейса администратора для модели ShoppingCart.
     """
 
-    list_display = ('user', 'recipe')
+    list_display = ("user", "recipe")
