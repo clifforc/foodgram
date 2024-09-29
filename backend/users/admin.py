@@ -1,11 +1,11 @@
 from django.contrib import admin
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.admin import UserAdmin
-from django.utils.safestring import mark_safe
+from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 
 from recipes.models import Favorite, Recipe
-from .models import CustomUser, Subscription
+from users.models import CustomUser, Subscription
 
 
 @admin.register(CustomUser)

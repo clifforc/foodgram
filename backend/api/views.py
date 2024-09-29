@@ -4,24 +4,15 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
+from filters import RecipeFilter
+from pagination import CustomPagination
+from permissions import IsAuthorOrReadOnly
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from recipes.models import (
-    Favorite,
-    Ingredient,
-    Recipe,
-    RecipeIngredient,
-    ShoppingCart,
-    Tag,
-)
-from users.models import Subscription
-from .filters import RecipeFilter
-from .pagination import CustomPagination
-from .permissions import IsAuthorOrReadOnly
-from .serializers import (
+from api.serializers import (
     CustomUserCreateSerializer,
     CustomUserSerializer,
     CustomUserSetPasswordSerializer,
@@ -31,6 +22,15 @@ from .serializers import (
     SubscriptionSerializer,
     TagSerializer,
 )
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingCart,
+    Tag,
+)
+from users.models import Subscription
 
 User = get_user_model()
 
@@ -88,7 +88,6 @@ class CustomUserViewSet(UserViewSet):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({"avatar": serializer.data["avatar"]})
-
 
     @action(
         detail=True, methods=["POST", "DELETE"],

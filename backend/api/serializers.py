@@ -4,6 +4,7 @@ from django.db import transaction
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 
+from api.fields import Base64ImageField
 from recipes.models import (
     Favorite,
     Ingredient,
@@ -13,7 +14,6 @@ from recipes.models import (
     Tag,
 )
 from users.models import Subscription
-from .fields import Base64ImageField
 
 User = get_user_model()
 
@@ -98,6 +98,7 @@ class CustomUserSetPasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 "Пароль не соответсвует текущему.")
         return data
+
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
