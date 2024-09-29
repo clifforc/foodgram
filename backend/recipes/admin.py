@@ -13,23 +13,12 @@ from .models import (
 
 
 class RecipeIngredientInline(admin.TabularInline):
-    """
-    Интерфейс для модели RecipeIngredient.
-
-    Позволяет редактировать ингредиенты рецепта непосредственно
-    в форме рецепта.
-    """
-
     model = RecipeIngredient
     extra = 0
 
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    """
-    Настройки интерфейса администратора для модели Recipe.
-    """
-
     list_display = (
         "name",
         "author",
@@ -69,27 +58,12 @@ class RecipeAdmin(admin.ModelAdmin):
         models.ManyToManyField: {"widget": CheckboxSelectMultiple},
     }
 
-    def favorite_count(self, obj: Recipe) -> int:
-        """
-        Получить количество раз, когда рецепт был добавлен в избранное.
-
-        Args:
-            obj (Recipe): Экземпляр модели Recipe.
-        Returns:
-            int: Количество добавлений в избранное.
-        """
+    def favorite_count(self, obj):
         return Favorite.objects.filter(recipe=obj).count()
 
-    def get_tags(self, obj: Recipe) -> str:
-        """
-        Получить теги рецепта в виде строки.
-
-        Args:
-            obj (Recipe): Экземпляр модели Recipe.
-        Returns:
-            str: Строка с перечислением тегов рецепта.
-        """
-        return ", ".join([tag.name for tag in obj.tags.all()])
+    def get_tags(self, obj):
+        return ", ".join(
+            obj.tags.values_list('name', flat=True).order_by('name'))
 
     favorite_count.short_descriptrion = "В избранном"
     get_tags.short_description = "Теги"
@@ -97,10 +71,6 @@ class RecipeAdmin(admin.ModelAdmin):
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
-    """
-    Настройки интерфейса администратора для модели Ingredient.
-    """
-
     list_display = (
         "name",
         "measurement_unit",
@@ -112,10 +82,6 @@ class IngredientAdmin(admin.ModelAdmin):
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    """
-    Настройки интерфейса администратора для модели Tag.
-    """
-
     list_display = ("name", "slug")
     search_fields = [
         "name",
@@ -124,17 +90,9 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
-    """
-    Настройки интерфейса администратора для модели Favorite.
-    """
-
     list_display = ("user", "recipe")
 
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
-    """
-    Настройки интерфейса администратора для модели ShoppingCart.
-    """
-
     list_display = ("user", "recipe")

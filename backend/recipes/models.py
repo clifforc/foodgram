@@ -10,14 +10,6 @@ User = get_user_model()
 
 
 class Ingredient(models.Model):
-    """
-    Модель для представления ингредиентов.
-
-    Attributes:
-        name (CharField): Наименование ингредиента.
-        measurement_unit (CharField): Единица измерения.
-    """
-
     name = models.CharField(
         max_length=constants.INGREDIENT_NAME_MAX_LENGTH,
         verbose_name="Наименование"
@@ -36,14 +28,6 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
-    """
-    Модель для представления тэгов.
-
-    Attributes:
-        name (CharField): Наименование тега.
-        slug (SlugField): Слаг тега.
-    """
-
     name = models.CharField(
         max_length=constants.TAG_MAX_LENGTH, unique=True,
         verbose_name="Название"
@@ -62,42 +46,34 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
-    """
-    Модель для представления рецептов.
-
-    Эта модель хранит информацию о кулинарных рецептах, включая их ингредиенты,
-    время приготовления, автора и связанные теги.
-
-    Attributes:
-        tags (ManyToManyField): Связь многие-ко-многим с моделью Tag.
-        author (ForeignKey): Ссылка на пользователя, создавшего рецепт.
-        ingredients (ManyToManyField): : Связь многие-ко-многим с моделью
-            Ingredient через промежуточную модель RecipeIngredient.
-        name (CharField): Название рецепта.
-        image (ImageField): Изображение рецепта.
-        text (TextField): Текстовое описание рецепта.
-        cooking_time (PositiveIntegerField): Время приготовления.
-        short_link (CharField): Уникальная короткая ссылка для доступа
-            к рецепту.
-        created_at (DateTimeField): Дата и время создания рецепта.
-    """
-
-    tags = models.ManyToManyField(Tag, related_name="recipes",
-                                  verbose_name="Тэги")
+    tags = models.ManyToManyField(
+        Tag,
+        related_name="recipes",
+        verbose_name="Тэги"
+    )
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="recipes",
+        User,
+        on_delete=models.CASCADE,
+        related_name="recipes",
         verbose_name="Автор"
     )
     ingredients = models.ManyToManyField(
-        Ingredient, through="RecipeIngredient", verbose_name="Ингредиенты"
+        Ingredient,
+        through="RecipeIngredient",
+        verbose_name="Ингредиенты"
     )
     name = models.CharField(
-        max_length=constants.NAME_MAX_LENGTH, verbose_name="Название"
+        max_length=constants.NAME_MAX_LENGTH,
+        verbose_name="Название"
     )
-    image = models.ImageField(upload_to="recipes/", verbose_name="Изображение")
+    image = models.ImageField(
+        upload_to="recipes/",
+        verbose_name="Изображение"
+    )
     text = models.TextField(verbose_name="Описание")
     cooking_time = models.PositiveIntegerField(
-        validators=[MinValueValidator(1)], verbose_name="Время приготовления"
+        validators=[MinValueValidator(1)],
+        verbose_name="Время приготовления"
     )
     short_link = models.CharField(
         max_length=10,
@@ -109,13 +85,6 @@ class Recipe(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
 
     def get_or_create_short_link(self):
-        """
-        Возвращает существующую короткую ссылку или создает новую.
-
-        Returns:
-            str: Короткая ссылка для рецепта.
-        """
-
         if not self.short_link:
             self.short_link = shortuuid.uuid()[:8]
             self.save(update_fields=["short_link"])
@@ -130,30 +99,26 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
-    """
-    Модель для представления связи между моделями рецептов и ингредиентов.
-
-    Эта модель позволяет указать количество ингредиента, необходимого
-    для приготовления рецепта.
-
-    Attributes:
-        recipe (ForeignKey): Связь с моделью Recipe.
-        ingredient (ForeignKey): Связь с моделью Ingredient.
-        amount (PositiveIntegerField): Количество ингредиента, необходимое
-            для рецепта.
-    """
-
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
-                               verbose_name="Рецепт")
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        verbose_name="Рецепт"
+    )
     ingredient = models.ForeignKey(
-        Ingredient, on_delete=models.CASCADE, verbose_name="Ингредиент"
+        Ingredient,
+        on_delete=models.CASCADE,
+        verbose_name="Ингредиент"
     )
     amount = models.PositiveIntegerField(
-        validators=[MinValueValidator(1)], verbose_name="Количество"
+        validators=[MinValueValidator(1)],
+        verbose_name="Количество"
     )
 
     class Meta:
-        unique_together = ["recipe", "ingredient"]
+        models.UniqueConstraint(
+            name="unique_recipe_ingredient",
+            fields=["recipe", "ingredient"]
+        )
 
     def __str__(self):
         return (
@@ -164,17 +129,6 @@ class RecipeIngredient(models.Model):
 
 
 class Favorite(models.Model):
-    """
-    Модель для представления избранных рецептов пользователя.
-
-    Эта модель позволяет пользователям отмечать рецепты как избранные,
-    создавая связь между пользователем и рецептом.
-
-    Attributes:
-        user (ForeignKey): Связь с моделью User.
-        recipe (ForeignKey): Связь с моделью Recipe.
-    """
-
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -191,24 +145,16 @@ class Favorite(models.Model):
     class Meta:
         verbose_name = "избранное"
         verbose_name_plural = "Избранное"
-        unique_together = ["user", "recipe"]
+        models.UniqueConstraint(
+            name="unique_favorite",
+            fields=["user", "recipe"]
+        )
 
     def __str__(self):
         return f"{self.recipe.name} в избранном у {self.user.username}"
 
 
 class ShoppingCart(models.Model):
-    """
-    Модель для представления списка покупок пользователя.
-
-    Эта модель позволяет пользователям добавлять рецепты в список покупок,
-    чтобы потом использовать для составления списка необходимых ингредиентов.
-
-    Attributes:
-        user (ForeignKey): Связь с моделью User.
-        recipe (ForeignKey): Связь с моделью Recipe.
-    """
-
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -225,7 +171,10 @@ class ShoppingCart(models.Model):
     class Meta:
         verbose_name = "Список покупок"
         verbose_name_plural = "Список покупок"
-        unique_together = ["user", "recipe"]
+        models.UniqueConstraint(
+            name='unique_shopping_cart',
+            fields=["user", "recipe"]
+        )
 
     def __str__(self):
         return f"{self.recipe.name} в корзине у {self.user.username}"

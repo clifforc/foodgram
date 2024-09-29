@@ -4,24 +4,10 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 
 from foodgram import constants
-
 from .validators import validate_username_not_me
 
 
 class CustomUser(AbstractUser):
-    """
-    Пользовательская модель, расширяющая стандартную модель AbstractUser.
-
-    Эта модель использует email вместо имени пользователя для аутентификации.
-
-    Attributes:
-        email (EmailField): Уникальный адрес электронной почты пользователя.
-        username (CharField): Уникальное имя пользователя.
-        first_name (CharField): Имя пользователя.
-        last_name (CharField): Фамилия пользователя.
-        avatar (ImageField): Аватар профиля пользователя.
-    """
-
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ("username", "first_name", "last_name")
 
@@ -69,14 +55,6 @@ User = get_user_model()
 
 
 class Subscription(models.Model):
-    """
-    Модель для представления подписки пользователя на автора.
-
-    Attributes:
-        user (ForeignKey): Ссылка на пользователя, который подписывается.
-        author (ForeignKey): Ссылка на пользователя, на которого подписываются.
-    """
-
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

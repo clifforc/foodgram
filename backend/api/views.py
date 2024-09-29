@@ -18,7 +18,6 @@ from recipes.models import (
     Tag,
 )
 from users.models import Subscription
-
 from .filters import RecipeFilter
 from .pagination import CustomPagination
 from .permissions import IsAuthorOrReadOnly
@@ -37,37 +36,18 @@ User = get_user_model()
 
 
 class CustomUserViewSet(UserViewSet):
-    """
-    ViewSet для управления пользователями.
-
-    Предоставляет стандартные CRUD операции, а также дополнительные действия
-    для управления паролем, аватаром и подписками пользователей.
-    """
-
     serializer_class = CustomUserSerializer
     pagination_class = CustomPagination
 
     def get_permissions(self):
-        """
-        Разрешения для различных действий.
-        """
-
         if self.action in ["create", "list", "retrieve"]:
             return [AllowAny()]
         return [IsAuthenticated()]
 
     def get_queryset(self):
-        """
-        Возвращает отсортированный QuerySet всех пользователей.
-        """
-
         return User.objects.all().order_by("id")
 
     def get_serializer_class(self):
-        """
-        Выбирает соответствующий сериализатор в зависимости от действия.
-        """
-
         if self.action == "create":
             return CustomUserCreateSerializer
         if self.action == "set_password":
@@ -76,23 +56,12 @@ class CustomUserViewSet(UserViewSet):
 
     @action(detail=False, methods=["POST"])
     def set_password(self, request):
-        """
-        Устанавливает новый пароль для аутентифицированного пользователя.
-        """
-
-        user = request.user
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        if not user.check_password(serializer.data.get("current_password")):
-            return Response(
-                "Пароль не соответсвует текущему.",
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        user.set_password(serializer.validated_data["new_password"])
-        user.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if serializer.is_valid(raise_exception=True):
+            user = request.user
+            user.set_password(serializer.validated_data["new_password"])
+            user.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=False,
@@ -101,11 +70,9 @@ class CustomUserViewSet(UserViewSet):
         url_path="me/avatar",
     )
     def avatar(self, request):
-        """
-        Управляет аватаром пользователя.
-        """
-
         user = request.user
+        serializer = CustomUserSerializer(user, data=request.data,
+                                          partial=True)
 
         if request.method == "DELETE":
             if user.avatar:
@@ -114,26 +81,20 @@ class CustomUserViewSet(UserViewSet):
             return Response("Аватар не найден",
                             status=status.HTTP_404_NOT_FOUND)
 
-        if request.data.get("avatar"):
-            serializer = CustomUserSerializer(user, data=request.data,
-                                              partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response({"avatar": serializer.data["avatar"]})
-            return Response(serializer.errors,
+        if 'avatar' not in request.data:
+            return Response("Отсутствует поле 'avatar'",
                             status=status.HTTP_400_BAD_REQUEST)
-        return Response("Отсутствует поле 'avatar'",
-                        status=status.HTTP_400_BAD_REQUEST)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response({"avatar": serializer.data["avatar"]})
+
 
     @action(
         detail=True, methods=["POST", "DELETE"],
         permission_classes=[IsAuthenticated]
     )
     def subscribe(self, request, id=None):
-        """
-        Управляет подпиской пользователя на автора.
-        """
-
         author = get_object_or_404(User, id=id)
         user = request.user
 
@@ -171,10 +132,6 @@ class CustomUserViewSet(UserViewSet):
     @action(detail=False, methods=["GET"],
             permission_classes=[IsAuthenticated])
     def subscriptions(self, request):
-        """
-        Возвращает список подписок пользователя.
-        """
-
         user = request.user
         queryset = User.objects.filter(subscribed_to__user=user)
         recipes_limit = request.query_params.get("recipes_limit")
@@ -195,46 +152,21 @@ class CustomUserViewSet(UserViewSet):
         return Response(serializer.data)
 
 
-class BaseReadOnlyViewset(viewsets.ReadOnlyModelViewSet):
-    """
-    Базовый класс для ViewSets, предоставляющий только операции чтения.
-    """
-
-    permission_classes = [AllowAny]
-
-    def list(self, request):
-        """
-        Возвращает сериализованный список всех объектов.
-        """
-
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-
-class TagViewSet(BaseReadOnlyViewset):
-    """
-    ViewSet для работы с тегами.
-    """
-
+class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    permission_classes = [AllowAny]
+    pagination_class = None
 
 
-class IngredientViewSet(BaseReadOnlyViewset):
-    """
-    ViewSet для работы с ингредиентами.
-    """
-
+class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all().order_by("id")
     serializer_class = IngredientsSerializer
+    permission_classes = [AllowAny]
+    pagination_class = None
     search_fields = ["name"]
 
     def get_queryset(self):
-        """
-        Возвращает отфильтрованный QuerySet ингредиентов.
-        """
-
         queryset = super().get_queryset()
         name = self.request.query_params.get("name")
         if name:
@@ -243,13 +175,6 @@ class IngredientViewSet(BaseReadOnlyViewset):
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet для работы с рецептами.
-
-    Предоставляет CRUD операции для рецептов, а также дополнительные действия
-    для работы с корзиной покупок, избранным и получения короткой ссылки.
-    """
-
     queryset = Recipe.objects.all().order_by("-created_at")
     serializer_class = RecipeSerializer
     pagination_class = CustomPagination
@@ -258,19 +183,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
     search_fields = ["tags__slug"]
 
     def get_permissions(self):
-        """
-        Определяет разрешения для различных действий.
-        """
-
         if self.action in ["create", "update", "partial_update", "destroy"]:
             return [IsAuthenticated(), IsAuthorOrReadOnly()]
         return [AllowAny()]
 
     def get_queryset(self):
-        """
-        Возвращает отфильтрованный QuerySet рецептов.
-        """
-
         queryset = super().get_queryset()
         tags = self.request.query_params.getlist("tags")
         author = self.request.query_params.get("author")
@@ -290,10 +207,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["GET"], url_path="get-link")
     def get_short_link(self, request, pk=None):
-        """
-        Создает и возвращает короткую ссылку на рецепт.
-        """
-
         recipe = self.get_object()
         short_link = recipe.get_or_create_short_link()
         short_url = request.build_absolute_uri(f"/s/{short_link}")
@@ -303,13 +216,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["POST", "DELETE"],
-        permission_classes=[IsAuthenticated],
         url_path="shopping_cart",
     )
     def shopping_cart(self, request, pk=None):
-        """
-        Добавляет или удаляет рецепт из корзины покупок.
-        """
+        print(f"User: {request.user}")
+        print(f"User is authenticated: {request.user.is_authenticated}")
+        print(f"Request auth: {request.auth}")
+        print(f"Request headers: {request.headers}")
 
         user = request.user
         recipe = get_object_or_404(Recipe, pk=pk)
@@ -349,11 +262,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url_path="download_shopping_cart",
     )
     def download_shopping_cart(self, request):
-        """
-        Формирует и возвращает список покупок для рецептов в корзине
-        пользователя.
-        """
-
         user = request.user
         response = HttpResponse(content_type="text/plain")
 
@@ -381,14 +289,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["POST", "DELETE"],
-        permission_classes=[IsAuthenticated],
         url_path="favorite",
     )
     def favorite(self, request, pk=None):
-        """
-        Добавляет или удаляет рецепт из избранного.
-        """
-
         user = request.user
         recipe = get_object_or_404(Recipe, pk=pk)
 
@@ -418,18 +321,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
 
     def perform_create(self, serializer):
-        """
-        Выполняет создание рецепта, устанавливая текущего пользователя
-        как автора.
-        """
-
         serializer.save(author=self.request.user)
 
 
 def redirect_short_link(request, short_id):
-    """
-    Перенаправляет пользователя на страницу рецепта по короткой ссылке.
-    """
-
     recipe = get_object_or_404(Recipe, short_link=short_id)
     return redirect(f"/recipes/{recipe.id}")

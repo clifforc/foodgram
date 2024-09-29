@@ -1,18 +1,15 @@
 from django.contrib import admin
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.admin import UserAdmin
 from django.utils.safestring import mark_safe
+from django.urls import reverse
 
 from recipes.models import Favorite, Recipe
-
 from .models import CustomUser, Subscription
 
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
-    """
-    Настройки интерфейса администратора для модели CustomUser.
-    """
-
     list_display = ("email", "username", "is_active",
                     "is_staff", "is_superuser")
     search_fields = ("email", "username")
@@ -48,80 +45,60 @@ class CustomUserAdmin(UserAdmin):
     readonly_fields = ("get_subscriptions", "get_recipes",
                        "get_favorited_recipes")
 
-    def get_subscriptions(self, obj: CustomUser) -> str:
-        """
-        Получить список подписок пользователя.
-
-        Args:
-            obj (CustomUser): Объект пользователя.
-
-        Returns:
-            str: HTML-строка со ссылками на авторов, на которых подписан
-                 пользователь, или сообщение об отсутствии подписок.
-        """
+    def get_subscriptions(self, obj):
+        custom_user_ct = ContentType.objects.get_for_model(CustomUser)
+        app_label = custom_user_ct.app_label
+        model_name = custom_user_ct.model
 
         subscriptions = Subscription.objects.filter(user=obj)
-        if subscriptions:
+        if subscriptions.exists():
             return mark_safe(
-                "<br>".join(
-                    [
-                        '<a href="/admin/users/customuser/'
-                        f'{sub.author.id}/change/">'
-                        f"{sub.author.username}</a>"
-                        for sub in subscriptions
-                    ]
-                )
+                "<br>".join([
+                    f'''<a href="{
+                    reverse(f"admin:{app_label}_{model_name}_change",
+                            args=[sub.author.id])
+                    }">'''
+                    f"{sub.author.username}</a>"
+                    for sub in subscriptions
+                ])
             )
         return "Нет подписок"
 
-    def get_recipes(self, obj: CustomUser) -> str:
-        """
-        Получить список рецептов пользователя.
-
-        Args:
-            obj (CustomUser): Объект пользователя.
-
-        Returns:
-            str: HTML-строка со ссылками на рецепты пользователя,
-                 или сообщение об отсутствии рецептов.
-        """
+    def get_recipes(self, obj):
+        recipe_ct = ContentType.objects.get_for_model(Recipe)
+        app_label = recipe_ct.app_label
+        model_name = recipe_ct.model
 
         recipes = Recipe.objects.filter(author=obj)
-        if recipes:
+        if recipes.exists():
             return mark_safe(
-                "<br>".join(
-                    [
-                        '<a href="/admin/recipes/recipe/'
-                        f'{recipe.id}/change/">{recipe.name}</a>'
-                        for recipe in recipes
-                    ]
-                )
+                "<br>".join([
+                    f'''<a href="{
+                    reverse(f"admin:{app_label}_{model_name}_change",
+                            args=[recipe.id])
+                    }">'''
+                    f"{recipe.name}</a>"
+                    for recipe in recipes
+                ])
             )
         return "Нет рецептов"
 
-    def get_favorited_recipes(self, obj: CustomUser) -> str:
-        """
-        Получить список избранных рецептов пользователя.
-
-        Args:
-            obj (CustomUser): Объект пользователя.
-
-        Returns:
-            str: HTML-строка со ссылками на избранные рецепты пользователя,
-                 или сообщение об отсутствии избранных рецептов.
-        """
+    def get_favorited_recipes(self, obj):
+        recipe_ct = ContentType.objects.get_for_model(Favorite)
+        app_label = recipe_ct.app_label
+        model_name = recipe_ct.model
 
         favorited_recipes = Favorite.objects.filter(user=obj)
-        if favorited_recipes:
+        if favorited_recipes.exists():
             return mark_safe(
-                "<br>".join(
-                    [
-                        '<a href="/admin/recipes/favorite/'
-                        f'{favorited_recipe.id}/change/">'
-                        f"{favorited_recipe.recipe.name}</a>"
-                        for favorited_recipe in favorited_recipes
-                    ]
-                )
+                "<br>".join([
+                    f'''<a href="{
+                    reverse(f"admin:{app_label}_{model_name}_change",
+                            args=[favorited_recipe.id])
+                    }">'''
+                    f"{favorited_recipe.recipe.name}</a>"
+                    for favorited_recipe in favorited_recipes
+                ])
             )
         return "Нет избранных рецептов"
 
@@ -132,8 +109,4 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
-    """
-    Настройки интерфейса администратора для модели Subscription.
-    """
-
     list_display = ("user", "author")
