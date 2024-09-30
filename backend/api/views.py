@@ -18,7 +18,6 @@ from api.serializers import (
     CustomUserSerializer,
     CustomUserSetPasswordSerializer,
     IngredientsSerializer,
-    RecipeMiniSerializer,
     RecipeSerializer,
     SubscriptionSerializer,
     TagSerializer,

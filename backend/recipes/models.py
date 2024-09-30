@@ -115,7 +115,7 @@ class RecipeIngredient(models.Model):
     )
 
     class Meta:
-        constraints =[
+        constraints = [
             models.UniqueConstraint(name="unique_recipe_ingredient",
                                     fields=["recipe", "ingredient"])
         ]
@@ -149,6 +149,7 @@ class Favorite(models.Model):
             models.UniqueConstraint(name="unique_favorite",
                                     fields=["user", "recipe"])
         ]
+
     def __str__(self):
         return f"{self.recipe.name} в избранном у {self.user.username}"
 

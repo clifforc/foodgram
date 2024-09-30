@@ -55,7 +55,7 @@ class CustomUserSerializer(BaseCustomUserSerializer):
     def validate(self, attrs):
         request = self.context.get('request')
         if request and 'avatar' not in attrs or attrs.get('avatar') is None:
-                raise serializers.ValidationError("Отсутствует поле 'avatar'")
+            raise serializers.ValidationError("Отсутствует поле 'avatar'")
         return super().validate(attrs)
 
     def update(self, instance, validated_data):
