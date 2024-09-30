@@ -52,9 +52,18 @@ class CustomUserSerializer(BaseCustomUserSerializer):
             "avatar",
         )
 
+    def validate(self, attrs):
+        request = self.context.get('request')
+        if request and 'avatar' not in attrs or attrs.get('avatar') is None:
+                raise serializers.ValidationError("Отсутствует поле 'avatar'")
+        return super().validate(attrs)
+
     def update(self, instance, validated_data):
-        if 'avatar' in validated_data and instance.avatar:
-            instance.avatar.delete()
+        avatar = validated_data.get('avatar', None)
+        if avatar:
+            if instance.avatar:
+                instance.avatar.delete()
+            instance.avatar = avatar
         return super().update(instance, validated_data)
 
 
@@ -182,12 +191,14 @@ class RecipeSerializer(serializers.ModelSerializer):
         return value
 
     def recipe_ingredients_create(self, recipe, ingredients_data):
-        for ingredient_data in ingredients_data:
-            ingredient_id = ingredient_data["ingredient"]["id"]
-            RecipeIngredient.objects.create(
-                recipe=recipe, ingredient_id=ingredient_id,
-                amount=ingredient_data["amount"]
-            )
+        recipe_ingredients_to_create = [
+            RecipeIngredient(
+                recipe=recipe,
+                ingredient_id=ingredient_data["ingredient"]["id"],
+                amount=ingredient_data['amount'])
+            for ingredient_data in ingredients_data
+        ]
+        RecipeIngredient.objects.bulk_create(recipe_ingredients_to_create)
 
     @transaction.atomic
     def create(self, validated_data):

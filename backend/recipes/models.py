@@ -115,10 +115,10 @@ class RecipeIngredient(models.Model):
     )
 
     class Meta:
-        models.UniqueConstraint(
-            name="unique_recipe_ingredient",
-            fields=["recipe", "ingredient"]
-        )
+        constraints =[
+            models.UniqueConstraint(name="unique_recipe_ingredient",
+                                    fields=["recipe", "ingredient"])
+        ]
 
     def __str__(self):
         return (
@@ -145,11 +145,10 @@ class Favorite(models.Model):
     class Meta:
         verbose_name = "избранное"
         verbose_name_plural = "Избранное"
-        models.UniqueConstraint(
-            name="unique_favorite",
-            fields=["user", "recipe"]
-        )
-
+        constraints = [
+            models.UniqueConstraint(name="unique_favorite",
+                                    fields=["user", "recipe"])
+        ]
     def __str__(self):
         return f"{self.recipe.name} в избранном у {self.user.username}"
 
@@ -171,10 +170,10 @@ class ShoppingCart(models.Model):
     class Meta:
         verbose_name = "Список покупок"
         verbose_name_plural = "Список покупок"
-        models.UniqueConstraint(
-            name='unique_shopping_cart',
-            fields=["user", "recipe"]
-        )
+        constraints = [
+            models.UniqueConstraint(name='unique_shopping_cart',
+                                    fields=["user", "recipe"])
+        ]
 
     def __str__(self):
         return f"{self.recipe.name} в корзине у {self.user.username}"

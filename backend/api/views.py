@@ -10,6 +10,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from api.filters import RecipeFilter
+from api.mixins import AddRemoveMixin
 from api.pagination import CustomPagination
 from api.permissions import IsAuthorOrReadOnly
 from api.serializers import (
@@ -57,11 +58,11 @@ class CustomUserViewSet(UserViewSet):
     @action(detail=False, methods=["POST"])
     def set_password(self, request):
         serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = request.user
-            user.set_password(serializer.validated_data["new_password"])
-            user.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        serializer.is_valid(raise_exception=True)
+        user = request.user
+        user.set_password(serializer.validated_data["new_password"])
+        user.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=False,
@@ -81,21 +82,18 @@ class CustomUserViewSet(UserViewSet):
             return Response("Аватар не найден",
                             status=status.HTTP_404_NOT_FOUND)
 
-        if 'avatar' not in request.data:
-            return Response("Отсутствует поле 'avatar'",
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response({"avatar": serializer.data["avatar"]})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"avatar": user.avatar.url},
+                        status=status.HTTP_200_OK)
 
     @action(
         detail=True, methods=["POST", "DELETE"],
         permission_classes=[IsAuthenticated]
     )
     def subscribe(self, request, id=None):
-        author = get_object_or_404(User, id=id)
         user = request.user
+        author = get_object_or_404(User, id=id)
 
         if user == author:
             return Response(
@@ -173,7 +171,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
 
-class RecipeViewSet(viewsets.ModelViewSet):
+class RecipeViewSet(viewsets.ModelViewSet, AddRemoveMixin):
     queryset = Recipe.objects.all().order_by("-created_at")
     serializer_class = RecipeSerializer
     pagination_class = CustomPagination
@@ -182,7 +180,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     search_fields = ["tags__slug"]
 
     def get_permissions(self):
-        if self.action in ["create", "update", "partial_update", "destroy"]:
+        if self.action in ["create", "update", "partial_update", "destroy",
+                           "favorite", "download_shopping_cart",
+                           "shopping_cart"]:
             return [IsAuthenticated(), IsAuthorOrReadOnly()]
         return [AllowAny()]
 
@@ -218,46 +218,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url_path="shopping_cart",
     )
     def shopping_cart(self, request, pk=None):
-        print(f"User: {request.user}")
-        print(f"User is authenticated: {request.user.is_authenticated}")
-        print(f"Request auth: {request.auth}")
-        print(f"Request headers: {request.headers}")
-
-        user = request.user
-        recipe = get_object_or_404(Recipe, pk=pk)
-
-        if not user.is_authenticated:
-            return Response(
-                "Необходимо войти на сайт или зарегистрироваться",
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
-
-        if request.method == "DELETE":
-            try:
-                shopping_cart_item = ShoppingCart.objects.get(user=user,
-                                                              recipe=recipe)
-                shopping_cart_item.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
-            except ShoppingCart.DoesNotExist:
-                return Response(
-                    "Рецепт не найден в корзине",
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-        _, created = ShoppingCart.objects.get_or_create(user=user,
-                                                        recipe=recipe)
-        if created:
-            serializer = RecipeMiniSerializer(recipe)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(
-            "Рецепт уже добавлен в корзину",
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        return self.handle_add_remove(request, pk, ShoppingCart)
 
     @action(
         detail=False,
         methods=["GET"],
-        permission_classes=[IsAuthenticated],
         url_path="download_shopping_cart",
     )
     def download_shopping_cart(self, request):
@@ -291,33 +256,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         url_path="favorite",
     )
     def favorite(self, request, pk=None):
-        user = request.user
-        recipe = get_object_or_404(Recipe, pk=pk)
-
-        if not user.is_authenticated:
-            return Response(
-                "Необходимо войти на сайт или зарегистрироваться",
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
-
-        if request.method == "DELETE":
-            favorite = Favorite.objects.filter(user=user, recipe=recipe)
-            if favorite.exists():
-                favorite.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
-            return Response(
-                "Данного рецепта нет в избранном",
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        _, created = Favorite.objects.get_or_create(user=user, recipe=recipe)
-        if created:
-            serializer = RecipeMiniSerializer(recipe)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(
-            "Рецепт уже добавлен в избранное",
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        return self.handle_add_remove(request, pk, Favorite)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
