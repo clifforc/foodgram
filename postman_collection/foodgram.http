@@ -4,10 +4,10 @@
 @email = "testmail@mail.com"
 @username = "testuser"
 @password = "SecretPassword1"
-@baseUrl = http://127.0.0.1:8000
+@baseUrl = http://127.0.0.1:8080
 # group: register_and_get_tokens // No Auth / create_users
 # @name create_first_user
-POST {{baseUrl}}/api/users/
+POST http://127.0.0.1:8080/api/users/
 Content-Type: application/json
 
 {
@@ -54,7 +54,7 @@ Content-Type: application/json
 @secondUserUsername = "testsecond"
 # group: register_and_get_tokens // No Auth / create_users
 # @name create_second_user
-POST {{baseUrl}}/api/users/
+POST http://127.0.0.1:8080/api/users/
 Content-Type: application/json
 
 {
@@ -101,7 +101,7 @@ Content-Type: application/json
 @thirdUserUsername = "thirduser"
 # group: register_and_get_tokens // No Auth / create_users
 # @name create_third_user
-POST {{baseUrl}}/api/users/
+POST http://127.0.0.1:8080/api/users/
 Content-Type: application/json
 
 {
@@ -146,7 +146,7 @@ Content-Type: application/json
 ###
 # group: register_and_get_tokens // No Auth / get_tokens
 # @name get_token_for_first_user
-POST {{baseUrl}}/api/auth/token/login/
+POST http://127.0.0.1:8080/api/auth/token/login/
 Content-Type: application/json
 
 {
@@ -184,7 +184,7 @@ Content-Type: application/json
 ###
 # group: register_and_get_tokens // No Auth / get_tokens
 # @name get_token_for_second_user
-POST {{baseUrl}}/api/auth/token/login/
+POST http://127.0.0.1:8080/api/auth/token/login/
 Content-Type: application/json
 
 {
@@ -222,7 +222,7 @@ Content-Type: application/json
 ###
 # group: register_and_get_tokens // No Auth / create_users_bad_requests
 # @name user_registration_without_email
-POST {{baseUrl}}/api/users/
+POST http://127.0.0.1:8080/api/users/
 Content-Type: application/json
 
 {
@@ -246,7 +246,7 @@ Content-Type: application/json
 ###
 # group: register_and_get_tokens // No Auth / create_users_bad_requests
 # @name user_registration_without_username
-POST {{baseUrl}}/api/users/
+POST http://127.0.0.1:8080/api/users/
 Content-Type: application/json
 
 {
@@ -270,7 +270,7 @@ Content-Type: application/json
 ###
 # group: register_and_get_tokens // No Auth / create_users_bad_requests
 # @name user_registration_without_first_name
-POST {{baseUrl}}/api/users/
+POST http://127.0.0.1:8080/api/users/
 Content-Type: application/json
 
 {
@@ -294,7 +294,7 @@ Content-Type: application/json
 ###
 # group: register_and_get_tokens // No Auth / create_users_bad_requests
 # @name user_registration_without_last_name
-POST {{baseUrl}}/api/users/
+POST http://127.0.0.1:8080/api/users/
 Content-Type: application/json
 
 {
@@ -318,7 +318,7 @@ Content-Type: application/json
 ###
 # group: register_and_get_tokens // No Auth / create_users_bad_requests
 # @name user_registration_without_password
-POST {{baseUrl}}/api/users/
+POST http://127.0.0.1:8080/api/users/
 Content-Type: application/json
 
 {
@@ -343,7 +343,7 @@ Content-Type: application/json
 @tooLongEmail =11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111@mail.ru
 # group: register_and_get_tokens // No Auth / create_users_bad_requests
 # @name user_registration_too_long_email
-POST {{baseUrl}}/api/users/
+POST http://127.0.0.1:8080/api/users/
 Content-Type: application/json
 
 {
@@ -367,7 +367,7 @@ Content-Type: application/json
 ###
 # group: register_and_get_tokens // No Auth / create_users_bad_requests
 # @name user_registration_too_long_username
-POST {{baseUrl}}/api/users/
+POST http://127.0.0.1:8080/api/users/
 Content-Type: application/json
 
 {
@@ -391,7 +391,7 @@ Content-Type: application/json
 ###
 # group: register_and_get_tokens // No Auth / create_users_bad_requests
 # @name user_registration_too_long_first_name
-POST {{baseUrl}}/api/users/
+POST http://127.0.0.1:8080/api/users/
 Content-Type: application/json
 
 {
@@ -415,7 +415,7 @@ Content-Type: application/json
 ###
 # group: register_and_get_tokens // No Auth / create_users_bad_requests
 # @name user_registration_too_long_last_name
-POST {{baseUrl}}/api/users/
+POST http://127.0.0.1:8080/api/users/
 Content-Type: application/json
 
 {
@@ -439,7 +439,7 @@ Content-Type: application/json
 ###
 # group: register_and_get_tokens // No Auth / create_users_bad_requests
 # @name user_registration_with_invalid_username
-POST {{baseUrl}}/api/users/
+POST http://127.0.0.1:8080/api/users/
 Content-Type: application/json
 
 {
@@ -463,7 +463,7 @@ Content-Type: application/json
 ###
 # group: register_and_get_tokens // No Auth / create_users_bad_requests
 # @name user_registration_email_in_use
-POST {{baseUrl}}/api/users/
+POST http://127.0.0.1:8080/api/users/
 Content-Type: application/json
 
 {
@@ -487,7 +487,7 @@ Content-Type: application/json
 ###
 # group: register_and_get_tokens // No Auth / create_users_bad_requests
 # @name user_registration_username_in_use
-POST {{baseUrl}}/api/users/
+POST http://127.0.0.1:8080/api/users/
 Content-Type: application/json
 
 {
@@ -511,7 +511,7 @@ Content-Type: application/json
 ###
 # group: register_and_get_tokens // No Auth / get_token_bad_requests
 # @name get_token_username_and_email_mismatch
-POST {{baseUrl}}/api/auth/token/login/
+POST http://127.0.0.1:8080/api/auth/token/login/
 Content-Type: application/json
 
 {
@@ -532,7 +532,7 @@ Content-Type: application/json
 ###
 # group: register_and_get_tokens // No Auth / get_token_bad_requests
 # @name get_token_no_email
-POST {{baseUrl}}/api/auth/token/login/
+POST http://127.0.0.1:8080/api/auth/token/login/
 Content-Type: application/json
 
 {
@@ -552,7 +552,7 @@ Content-Type: application/json
 ###
 # group: register_and_get_tokens // No Auth / get_token_bad_requests
 # @name get_token_no_password
-POST {{baseUrl}}/api/auth/token/login/
+POST http://127.0.0.1:8080/api/auth/token/login/
 Content-Type: application/json
 
 {
@@ -573,7 +573,7 @@ Content-Type: application/json
 @userToken = 0ed570f5316bbcae07b6e9a0fe5c0e86e88ca39a
 # group: register_and_get_tokens // No Auth / logout
 # @name logout // User
-POST {{baseUrl}}/api/auth/token/logout/
+POST http://127.0.0.1:8080/api/auth/token/logout/
 Authorization: Token {{userToken}}
 
 > {%
@@ -590,7 +590,7 @@ Authorization: Token {{userToken}}
 ###
 # group: register_and_get_tokens // No Auth / logout
 # @name get_token
-POST {{baseUrl}}/api/auth/token/login/
+POST http://127.0.0.1:8080/api/auth/token/login/
 Content-Type: application/json
 
 {
@@ -628,7 +628,7 @@ Content-Type: application/json
 ###
 # group: users / get_user_info
 # @name get_user_list // No Auth
-GET {{baseUrl}}/api/users/
+GET http://127.0.0.1:8080/api/users/
 
 > {%
     // TODO: migrate to HTTP Client Response handler API
@@ -678,7 +678,7 @@ GET {{baseUrl}}/api/users/
 ###
 # group: users / get_user_info
 # @name get_user_list// User
-GET {{baseUrl}}/api/users/
+GET http://127.0.0.1:8080/api/users/
 Authorization: Token {{userToken}}
 
 > {%
@@ -729,7 +729,7 @@ Authorization: Token {{userToken}}
 ###
 # group: users / get_user_info
 # @name get_user_list_with_limit_param // User
-GET {{baseUrl}}/api/users/?
+GET http://127.0.0.1:8080/api/users/?
     limit=1
 Authorization: Token {{userToken}}
 
@@ -794,7 +794,7 @@ Authorization: Token {{userToken}}
 @userId =2
 # group: users / get_user_info
 # @name get_profile // No Auth
-GET {{baseUrl}}/api/users/{{userId}}/
+GET http://127.0.0.1:8080/api/users/{{userId}}/
 
 > {%
     // TODO: migrate to HTTP Client Response handler API
@@ -827,7 +827,7 @@ GET {{baseUrl}}/api/users/{{userId}}/
 ###
 # group: users / get_user_info
 # @name get_profile // User
-GET {{baseUrl}}/api/users/{{userId}}/
+GET http://127.0.0.1:8080/api/users/{{userId}}/
 Authorization: Token {{userToken}}
 
 > {%
@@ -861,7 +861,7 @@ Authorization: Token {{userToken}}
 ###
 # group: users / get_user_info
 # @name users_me // User
-GET {{baseUrl}}/api/users/me/
+GET http://127.0.0.1:8080/api/users/me/
 Authorization: Token {{userToken}}
 #Authorization: Token 1c9f6142fcd8d84cfd2b865cee88d20d626cd74c
 
@@ -903,7 +903,7 @@ Authorization: Token {{userToken}}
 ###
 # group: users / set_avatars // User
 # @name set_avatar // User
-PUT {{baseUrl}}/api/users/me/avatar/
+PUT http://127.0.0.1:8080/api/users/me/avatar/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -937,7 +937,7 @@ Content-Type: application/json
 ###
 # group: users / set_avatars // User
 # @name check_avatar_is_set // User
-GET {{baseUrl}}/api/users/me/
+GET http://127.0.0.1:8080/api/users/me/
 Authorization: Token {{userToken}}
 
 > {%
@@ -979,7 +979,7 @@ Authorization: Token {{userToken}}
 @newPassword = "QazQaz121"
 # group: users / reset_password
 # @name reset_password // User
-POST {{baseUrl}}/api/users/set_password/
+POST http://127.0.0.1:8080/api/users/set_password/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -1002,7 +1002,7 @@ Content-Type: application/json
 ###
 # group: users / reset_password
 # @name get_token_with_new_password
-POST {{baseUrl}}/api/auth/token/login/
+POST http://127.0.0.1:8080/api/auth/token/login/
 Content-Type: application/json
 
 {
@@ -1040,7 +1040,7 @@ Content-Type: application/json
 ###
 # group: users / reset_password
 # @name roll_back_password // User
-POST {{baseUrl}}/api/users/set_password/
+POST http://127.0.0.1:8080/api/users/set_password/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -1063,7 +1063,7 @@ Content-Type: application/json
 ###
 # group: users / reset_password
 # @name get_token_for_first_user
-POST {{baseUrl}}/api/auth/token/login/
+POST http://127.0.0.1:8080/api/auth/token/login/
 Content-Type: application/json
 
 {
@@ -1101,7 +1101,7 @@ Content-Type: application/json
 ###
 # group: users / users_bad_requests
 # @name users_me // No Auth
-GET {{baseUrl}}/api/users/me/
+GET http://127.0.0.1:8080/api/users/me/
 #Authorization: Token 1c9f6142fcd8d84cfd2b865cee88d20d626cd74c
 
 > {%
@@ -1118,7 +1118,7 @@ GET {{baseUrl}}/api/users/me/
 ###
 # group: users / users_bad_requests
 # @name get_non_existing_profile // User
-GET {{baseUrl}}/api/users/9876/
+GET http://127.0.0.1:8080/api/users/9876/
 Authorization: Token {{userToken}}
 
 > {%
@@ -1135,7 +1135,7 @@ Authorization: Token {{userToken}}
 ###
 # group: users / users_bad_requests
 # @name reset_password_wrong_password // User
-POST {{baseUrl}}/api/users/set_password/
+POST http://127.0.0.1:8080/api/users/set_password/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -1157,7 +1157,7 @@ Content-Type: application/json
 ###
 # group: users / users_bad_requests
 # @name delete_avatar // No Auth
-DELETE {{baseUrl}}/api/users/me/avatar/
+DELETE http://127.0.0.1:8080/api/users/me/avatar/
 
 > {%
     // TODO: migrate to HTTP Client Response handler API
@@ -1173,7 +1173,7 @@ DELETE {{baseUrl}}/api/users/me/avatar/
 ###
 # group: users / users_bad_requests
 # @name set_avatar // No Auth
-PUT {{baseUrl}}/api/users/me/avatar/
+PUT http://127.0.0.1:8080/api/users/me/avatar/
 Content-Type: application/json
 
 {
@@ -1194,7 +1194,7 @@ Content-Type: application/json
 ###
 # group: users / users_bad_requests
 # @name set_avatar_empty_body // User
-PUT {{baseUrl}}/api/users/me/avatar/
+PUT http://127.0.0.1:8080/api/users/me/avatar/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -1213,7 +1213,7 @@ Content-Type: application/json
 ###
 # group: users / delete_avatar // User
 # @name delete_avatar // User
-DELETE {{baseUrl}}/api/users/me/avatar/
+DELETE http://127.0.0.1:8080/api/users/me/avatar/
 Authorization: Token {{userToken}}
 
 > {%
@@ -1230,7 +1230,7 @@ Authorization: Token {{userToken}}
 ###
 # group: users / delete_avatar // User
 # @name check_avatar_is_deleted // User
-GET {{baseUrl}}/api/users/me/
+GET http://127.0.0.1:8080/api/users/me/
 Authorization: Token {{userToken}}
 
 > {%
@@ -1271,7 +1271,7 @@ Authorization: Token {{userToken}}
 ###
 # group: tags / get_tags_info
 # @name get_tag_list // No Auth
-GET {{baseUrl}}/api/tags/
+GET http://127.0.0.1:8080/api/tags/
 
 > {%
     // TODO: migrate to HTTP Client Response handler API
@@ -1304,7 +1304,7 @@ GET {{baseUrl}}/api/tags/
 ###
 # group: tags / get_tags_info
 # @name get_tag_list // User
-GET {{baseUrl}}/api/tags/
+GET http://127.0.0.1:8080/api/tags/
 Authorization: Token {{userToken}}
 
 > {%
@@ -1349,7 +1349,7 @@ Authorization: Token {{userToken}}
 ###
 # group: tags / get_tags_info
 # @name get_tag_detail // No Auth
-GET {{baseUrl}}/api/tags/{{firstTagId}}/
+GET http://127.0.0.1:8080/api/tags/{{firstTagId}}/
 
 > {%
     // TODO: migrate to HTTP Client Response handler API
@@ -1379,7 +1379,7 @@ GET {{baseUrl}}/api/tags/{{firstTagId}}/
 ###
 # group: tags / get_tags_info
 # @name get_tag_detail // User
-GET {{baseUrl}}/api/tags/{{firstTagId}}/
+GET http://127.0.0.1:8080/api/tags/{{firstTagId}}/
 Authorization: Token {{userToken}}
 
 > {%
@@ -1410,7 +1410,7 @@ Authorization: Token {{userToken}}
 ###
 # group: tags / tags_bad_requests
 # @name get_non_existing_tag // User
-GET {{baseUrl}}/api/tags/9876/
+GET http://127.0.0.1:8080/api/tags/9876/
 Authorization: Token {{userToken}}
 
 > {%
@@ -1427,7 +1427,7 @@ Authorization: Token {{userToken}}
 ###
 # group: tags / tags_bad_requests
 # @name create_tag // User
-POST {{baseUrl}}/api/tags/
+POST http://127.0.0.1:8080/api/tags/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -1451,7 +1451,7 @@ Content-Type: application/json
 ###
 # group: tags / tags_bad_requests
 # @name put_tag // User
-PUT {{baseUrl}}/api/tags/{{firstTagId}}/
+PUT http://127.0.0.1:8080/api/tags/{{firstTagId}}/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -1475,7 +1475,7 @@ Content-Type: application/json
 ###
 # group: tags / tags_bad_requests
 # @name patch_tag // User
-PATCH {{baseUrl}}/api/tags/{{firstTagId}}/
+PATCH http://127.0.0.1:8080/api/tags/{{firstTagId}}/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -1499,7 +1499,7 @@ Content-Type: application/json
 ###
 # group: tags / tags_bad_requests
 # @name delete_tag // User
-DELETE {{baseUrl}}/api/tags/{{firstTagId}}/
+DELETE http://127.0.0.1:8080/api/tags/{{firstTagId}}/
 Authorization: Token {{userToken}}
 
 > {%
@@ -1516,7 +1516,7 @@ Authorization: Token {{userToken}}
 ###
 # group: ingredients / get_ingradients
 # @name get_ingredients_list // No Auth
-GET {{baseUrl}}/api/ingredients/?
+GET http://127.0.0.1:8080/api/ingredients/?
     name=Паниф
 
 > {%
@@ -1550,7 +1550,7 @@ GET {{baseUrl}}/api/ingredients/?
 ###
 # group: ingredients / get_ingradients
 # @name get_ingredients_list // User
-GET {{baseUrl}}/api/ingredients/
+GET http://127.0.0.1:8080/api/ingredients/
 Authorization: Token {{userToken}}
 
 > {%
@@ -1591,7 +1591,7 @@ Authorization: Token {{userToken}}
 ###
 # group: ingredients / get_ingradients
 # @name get_ingredients_list_with_name_filter // User
-GET {{baseUrl}}/api/ingredients/?
+GET http://127.0.0.1:8080/api/ingredients/?
     name={{ingredientNameFirstLatter}}
 Authorization: Token {{userToken}}
 
@@ -1637,7 +1637,7 @@ Authorization: Token {{userToken}}
 ###
 # group: ingredients / get_ingradients
 # @name get_ingredient // No Auth
-GET {{baseUrl}}/api/ingredients/{{firstIndredientId}}/
+GET http://127.0.0.1:8080/api/ingredients/{{firstIndredientId}}/
 
 > {%
     // TODO: migrate to HTTP Client Response handler API
@@ -1666,7 +1666,7 @@ GET {{baseUrl}}/api/ingredients/{{firstIndredientId}}/
 ###
 # group: ingredients / get_ingradients
 # @name get_ingredient // User
-GET {{baseUrl}}/api/ingredients/{{firstIndredientId}}/
+GET http://127.0.0.1:8080/api/ingredients/{{firstIndredientId}}/
 Authorization: Token {{userToken}}
 
 > {%
@@ -1696,7 +1696,7 @@ Authorization: Token {{userToken}}
 ###
 # group: ingredients / ingredients_bad_requests
 # @name get_non_existing_ingredient // User
-GET {{baseUrl}}/api/ingredients/9876/
+GET http://127.0.0.1:8080/api/ingredients/9876/
 Authorization: Token {{userToken}}
 
 > {%
@@ -1713,7 +1713,7 @@ Authorization: Token {{userToken}}
 ###
 # group: ingredients / ingredients_bad_requests
 # @name create_ingredient // User
-POST {{baseUrl}}/api/ingredients/
+POST http://127.0.0.1:8080/api/ingredients/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -1736,7 +1736,7 @@ Content-Type: application/json
 ###
 # group: ingredients / ingredients_bad_requests
 # @name put_ingredient // User
-PUT {{baseUrl}}/api/ingredients/{{firstIndredientId}}/
+PUT http://127.0.0.1:8080/api/ingredients/{{firstIndredientId}}/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -1759,7 +1759,7 @@ Content-Type: application/json
 ###
 # group: ingredients / ingredients_bad_requests
 # @name patch_ingredient // User
-PATCH {{baseUrl}}/api/ingredients/{{firstIndredientId}}/
+PATCH http://127.0.0.1:8080/api/ingredients/{{firstIndredientId}}/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -1782,7 +1782,7 @@ Content-Type: application/json
 ###
 # group: ingredients / ingredients_bad_requests
 # @name delete_ingredient // User
-DELETE {{baseUrl}}/api/ingredients/{{firstIndredientId}}/
+DELETE http://127.0.0.1:8080/api/ingredients/{{firstIndredientId}}/
 Authorization: Token {{userToken}}
 
 > {%
@@ -1799,7 +1799,7 @@ Authorization: Token {{userToken}}
 ###
 # group: recipes / create_recipes
 # @name create_first_recipe // Second User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Content-Type: application/json
 
 {
@@ -1903,7 +1903,7 @@ Content-Type: application/json
 ###
 # group: recipes / create_recipes
 # @name create_second_recipe // Second User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Content-Type: application/json
 
 {
@@ -2007,7 +2007,7 @@ Content-Type: application/json
 ###
 # group: recipes / create_recipes
 # @name create_third_recipe // Second User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Content-Type: application/json
 
 {
@@ -2106,7 +2106,7 @@ Content-Type: application/json
 ###
 # group: recipes / create_recipes
 # @name create_fourth_recipe // Second User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Content-Type: application/json
 
 {
@@ -2205,7 +2205,7 @@ Content-Type: application/json
 ###
 # group: recipes / create_recipes
 # @name create_fifth_recipe // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -2305,7 +2305,7 @@ Content-Type: application/json
 ###
 # group: recipes / get_recipes
 # @name get_recipes_list // No Auth
-GET {{baseUrl}}/api/recipes/
+GET http://127.0.0.1:8080/api/recipes/
 
 > {%
     // TODO: migrate to HTTP Client Response handler API
@@ -2400,7 +2400,7 @@ GET {{baseUrl}}/api/recipes/
 ###
 # group: recipes / get_recipes
 # @name get_recipes_list // User
-GET {{baseUrl}}/api/recipes/
+GET http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 
 > {%
@@ -2496,7 +2496,7 @@ Authorization: Token {{userToken}}
 ###
 # group: recipes / get_recipes
 # @name get_recipes_list_with_limit_param // User
-GET {{baseUrl}}/api/recipes/?
+GET http://127.0.0.1:8080/api/recipes/?
     limit=2
 Authorization: Token {{userToken}}
 
@@ -2604,7 +2604,7 @@ Authorization: Token {{userToken}}
 ###
 # group: recipes / get_recipes
 # @name get_recipes_list_with_author_param // User
-GET {{baseUrl}}/api/recipes/?
+GET http://127.0.0.1:8080/api/recipes/?
     author={{userId}}
 Authorization: Token {{userToken}}
 
@@ -2719,7 +2719,7 @@ Authorization: Token {{userToken}}
 ###
 # group: recipes / get_recipes
 # @name get_recipes_list_with_two_tags_param // User
-GET {{baseUrl}}/api/recipes/?
+GET http://127.0.0.1:8080/api/recipes/?
     tags={{thirdTagSlug}}
 Authorization: Token {{userToken}}
 
@@ -2853,7 +2853,7 @@ Authorization: Token {{userToken}}
 ###
 # group: recipes / get_recipes
 # @name get_recipe_detail // No Auth
-GET {{baseUrl}}/api/recipes/{{firstRecipeId}}/
+GET http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/
 
 > {%
     // TODO: migrate to HTTP Client Response handler API
@@ -2930,7 +2930,7 @@ GET {{baseUrl}}/api/recipes/{{firstRecipeId}}/
 ###
 # group: recipes / get_recipes
 # @name get_recipe_detail // User
-GET {{baseUrl}}/api/recipes/{{firstRecipeId}}/
+GET http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/
 
 > {%
     // TODO: migrate to HTTP Client Response handler API
@@ -3007,7 +3007,7 @@ GET {{baseUrl}}/api/recipes/{{firstRecipeId}}/
 ###
 # group: recipes / get_recipe_short_link
 # @name get_recipe_short_link // User
-GET {{baseUrl}}/api/recipes/{{firstRecipeId}}/get-link/
+GET http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/get-link/
 Authorization: Token {{userToken}}
 
 > {%
@@ -3036,7 +3036,7 @@ Authorization: Token {{userToken}}
 ###
 # group: recipes / get_recipe_short_link
 # @name get_recipe_short_link // No Auth
-GET {{baseUrl}}/api/recipes/{{firstRecipeId}}/get-link/
+GET http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/get-link/
 
 > {%
     // TODO: migrate to HTTP Client Response handler API
@@ -3064,7 +3064,7 @@ GET {{baseUrl}}/api/recipes/{{firstRecipeId}}/get-link/
 ###
 # group: recipes / update_recipes
 # @name update_recipe // Second User
-PATCH {{baseUrl}}/api/recipes/{{firstRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -3159,7 +3159,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_without_ingredients // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3187,7 +3187,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_empty_ingredients_fields // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3216,7 +3216,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_with_non_existing_ingredient // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3250,7 +3250,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_with_ingredient_amount_less_than_one // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3284,7 +3284,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_with_repetitive_ingredients // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3322,7 +3322,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_without_tags_field // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3356,7 +3356,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_empty_tags // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3391,7 +3391,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_with_repetitive_tags // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3425,7 +3425,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_with_non_existing_tag // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3462,7 +3462,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_without_image_field // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3494,7 +3494,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_empty_image // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3527,7 +3527,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_without_name_field // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3559,7 +3559,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_empty_name // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3592,7 +3592,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_too_long_name // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3625,7 +3625,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_without_text_field // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3657,7 +3657,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_empty_text // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3690,7 +3690,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_without_cooking_time_field // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3722,7 +3722,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_empty_string_as_cooking_time // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3755,7 +3755,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe_cooking_time_less_than_one // User
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3788,7 +3788,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / create_recipe_bad_requests
 # @name create_recipe // No Auth
-POST {{baseUrl}}/api/recipes/
+POST http://127.0.0.1:8080/api/recipes/
 Content-Type: application/json
 
 {
@@ -3825,7 +3825,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe_not_author // User
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
@@ -3858,7 +3858,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe // No Auth
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Content-Type: application/json
 
 {
@@ -3890,7 +3890,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe_without_ingredients_field // Second User
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -3917,7 +3917,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe_empty_ingredients // Second User
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -3945,7 +3945,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe_with_non_existing_ingredient // Second User
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -3978,7 +3978,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe_with_ingredient_amount_less_than_one // Second User
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -4013,7 +4013,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe_with_repetitive_ingredients // Second User
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -4051,7 +4051,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe_without_tags_field // Second User
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -4081,7 +4081,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe_empty_tags // Second User
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -4112,7 +4112,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe_with_non_existing_tag // Second User
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -4145,7 +4145,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe_repetitive_tags  // Second User
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -4179,7 +4179,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe_empty_image  // Second User
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -4212,7 +4212,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe_empty_name  // Second User
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -4245,7 +4245,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe_too_long_name  // Second User
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -4278,7 +4278,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe_empty_text  // Second User
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -4311,7 +4311,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe_empty_string_as_cooking_time  // Second User
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -4344,7 +4344,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_recipe_empty_cooking_time_less_than_one  // Second User
-PATCH {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+PATCH http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -4377,7 +4377,7 @@ Content-Type: application/json
 ###
 # group: recipes / recipes_bad_requests / update_recipe_bad_requests
 # @name update_none_existing_recipe // Second User
-PATCH {{baseUrl}}/api/recipes/9876/
+PATCH http://127.0.0.1:8080/api/recipes/9876/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -4410,7 +4410,7 @@ Content-Type: application/json
 ###
 # group: subscriptions / create_subscriptions
 # @name create_subscription // User
-POST {{baseUrl}}/api/users/{{thirdUserId}}/subscribe/
+POST http://127.0.0.1:8080/api/users/{{thirdUserId}}/subscribe/
 Authorization: Token {{userToken}}
 
 > {%
@@ -4462,7 +4462,7 @@ Authorization: Token {{userToken}}
 ###
 # group: subscriptions / create_subscriptions
 # @name create_subscription_with_recipes_limit_param // User
-POST {{baseUrl}}/api/users/{{secondUserId}}/subscribe/?
+POST http://127.0.0.1:8080/api/users/{{secondUserId}}/subscribe/?
     recipes_limit=2
 Authorization: Token {{userToken}}
 
@@ -4526,7 +4526,7 @@ Authorization: Token {{userToken}}
 ###
 # group: subscriptions / get_subscriptions
 # @name get_subscription_list // User
-GET {{baseUrl}}/api/users/subscriptions/
+GET http://127.0.0.1:8080/api/users/subscriptions/
 Authorization: Token {{userToken}}
 
 > {%
@@ -4595,7 +4595,7 @@ Authorization: Token {{userToken}}
 ###
 # group: subscriptions / get_subscriptions
 # @name get_subscription_list_with_limit_param // User
-GET {{baseUrl}}/api/users/subscriptions/?
+GET http://127.0.0.1:8080/api/users/subscriptions/?
     limit=1
 Authorization: Token {{userToken}}
 
@@ -4676,7 +4676,7 @@ Authorization: Token {{userToken}}
 ###
 # group: subscriptions / get_subscriptions
 # @name get_subscription_list_with_recipes_limit_param // User
-GET {{baseUrl}}/api/users/subscriptions/?
+GET http://127.0.0.1:8080/api/users/subscriptions/?
     recipes_limit=2
 Authorization: Token {{userToken}}
 
@@ -4759,7 +4759,7 @@ Authorization: Token {{userToken}}
 ###
 # group: subscriptions / subscription_bad_requests
 # @name create_subscription // No Auth
-POST {{baseUrl}}/api/users/{{thirdUserId}}/subscribe/
+POST http://127.0.0.1:8080/api/users/{{thirdUserId}}/subscribe/
 
 > {%
     // TODO: migrate to HTTP Client Response handler API
@@ -4774,7 +4774,7 @@ POST {{baseUrl}}/api/users/{{thirdUserId}}/subscribe/
 ###
 # group: subscriptions / subscription_bad_requests
 # @name create_duplicated_subscription // User
-POST {{baseUrl}}/api/users/{{thirdUserId}}/subscribe/
+POST http://127.0.0.1:8080/api/users/{{thirdUserId}}/subscribe/
 Authorization: Token {{userToken}}
 
 > {%
@@ -4790,7 +4790,7 @@ Authorization: Token {{userToken}}
 ###
 # group: subscriptions / subscription_bad_requests
 # @name create_self_subscription // User
-POST {{baseUrl}}/api/users/{{userId}}/subscribe/
+POST http://127.0.0.1:8080/api/users/{{userId}}/subscribe/
 Authorization: Token {{userToken}}
 
 > {%
@@ -4806,7 +4806,7 @@ Authorization: Token {{userToken}}
 ###
 # group: subscriptions / subscription_bad_requests
 # @name create_subscription_to_non_existing_author // User
-POST {{baseUrl}}/api/users/9876/subscribe/
+POST http://127.0.0.1:8080/api/users/9876/subscribe/
 Authorization: Token {{userToken}}
 
 > {%
@@ -4822,7 +4822,7 @@ Authorization: Token {{userToken}}
 ###
 # group: shopping_cart / add_to_shopping_cart
 # @name add_to_shopping_cart // User
-POST {{baseUrl}}/api/recipes/{{firstRecipeId}}/shopping_cart/
+POST http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/shopping_cart/
 Authorization: Token {{userToken}}
 
 > {%
@@ -4853,7 +4853,7 @@ Authorization: Token {{userToken}}
 ###
 # group: shopping_cart / download_shopping_cart
 # @name download_shopping_cart // User
-GET {{baseUrl}}/api/recipes/download_shopping_cart/
+GET http://127.0.0.1:8080/api/recipes/download_shopping_cart/
 Authorization: Token {{userToken}}
 
 > {%
@@ -4870,7 +4870,7 @@ Authorization: Token {{userToken}}
 ###
 # group: shopping_cart / shopping_cart_bad_requests
 # @name add_to_shopping_cart // No Auth
-POST {{baseUrl}}/api/recipes/{{firstRecipeId}}/shopping_cart/
+POST http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/shopping_cart/
 
 > {%
     // TODO: migrate to HTTP Client Response handler API
@@ -4885,7 +4885,7 @@ POST {{baseUrl}}/api/recipes/{{firstRecipeId}}/shopping_cart/
 ###
 # group: shopping_cart / shopping_cart_bad_requests
 # @name add_again_to_shopping_cart // User
-POST {{baseUrl}}/api/recipes/{{firstRecipeId}}/shopping_cart/
+POST http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/shopping_cart/
 Authorization: Token {{userToken}}
 
 > {%
@@ -4901,7 +4901,7 @@ Authorization: Token {{userToken}}
 ###
 # group: shopping_cart / shopping_cart_bad_requests
 # @name add_non_existing_recipe_to_shopping_cart // User
-POST {{baseUrl}}/api/recipes/9876/shopping_cart/
+POST http://127.0.0.1:8080/api/recipes/9876/shopping_cart/
 Authorization: Token {{userToken}}
 
 > {%
@@ -4917,7 +4917,7 @@ Authorization: Token {{userToken}}
 ###
 # group: favorite / add_to_favorite
 # @name add_to_favorite // User
-POST {{baseUrl}}/api/recipes/{{firstRecipeId}}/favorite/
+POST http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/favorite/
 Authorization: Token {{userToken}}
 
 > {%
@@ -4948,7 +4948,7 @@ Authorization: Token {{userToken}}
 ###
 # group: favorite / favorite_bad_requests
 # @name add_to_favorite // No Auth
-POST {{baseUrl}}/api/recipes/{{firstRecipeId}}/favorite/
+POST http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/favorite/
 
 > {%
     // TODO: migrate to HTTP Client Response handler API
@@ -4963,7 +4963,7 @@ POST {{baseUrl}}/api/recipes/{{firstRecipeId}}/favorite/
 ###
 # group: favorite / favorite_bad_requests
 # @name add_again_to_favorite // User
-POST {{baseUrl}}/api/recipes/{{firstRecipeId}}/favorite/
+POST http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/favorite/
 Authorization: Token {{userToken}}
 
 > {%
@@ -4979,7 +4979,7 @@ Authorization: Token {{userToken}}
 ###
 # group: favorite / favorite_bad_requests
 # @name add_non_existing_recipe_to_favorite // User
-POST {{baseUrl}}/api/recipes/9876/favorite/
+POST http://127.0.0.1:8080/api/recipes/9876/favorite/
 Authorization: Token {{userToken}}
 
 > {%
@@ -4995,7 +4995,7 @@ Authorization: Token {{userToken}}
 ###
 # group: recipe_filters_for_favorite_and_shopping_cart
 # @name get_recipes_list_with_is_in_shopping_cart_param // User
-GET {{baseUrl}}/api/recipes/?
+GET http://127.0.0.1:8080/api/recipes/?
     is_in_shopping_cart=1
 Authorization: Token {{userToken}}
 
@@ -5111,7 +5111,7 @@ Authorization: Token {{userToken}}
 ###
 # group: recipe_filters_for_favorite_and_shopping_cart
 # @name get_recipes_list_with_is_in_shopping_cart_param // No Auth
-GET {{baseUrl}}/api/recipes/?
+GET http://127.0.0.1:8080/api/recipes/?
     is_in_shopping_cart=1
 
 > {%
@@ -5208,7 +5208,7 @@ GET {{baseUrl}}/api/recipes/?
 ###
 # group: recipe_filters_for_favorite_and_shopping_cart
 # @name get_recipes_list_with_is_favorited_param // User
-GET {{baseUrl}}/api/recipes/?
+GET http://127.0.0.1:8080/api/recipes/?
     is_favorited=1
 Authorization: Token {{userToken}}
 
@@ -5322,7 +5322,7 @@ Authorization: Token {{userToken}}
 ###
 # group: recipe_filters_for_favorite_and_shopping_cart
 # @name get_recipes_list_with_is_favorited_param // No Auth
-GET {{baseUrl}}/api/recipes/?
+GET http://127.0.0.1:8080/api/recipes/?
     is_favorited=1
 
 > {%
@@ -5419,7 +5419,7 @@ GET {{baseUrl}}/api/recipes/?
 ###
 # group: delete_requests / subscriptions / bad_requests
 # @name delete_subscription // No Auth
-DELETE {{baseUrl}}/api/users/{{thirdUserId}}/subscribe/
+DELETE http://127.0.0.1:8080/api/users/{{thirdUserId}}/subscribe/
 
 > {%
     // TODO: migrate to HTTP Client Response handler API
@@ -5434,7 +5434,7 @@ DELETE {{baseUrl}}/api/users/{{thirdUserId}}/subscribe/
 ###
 # group: delete_requests / subscriptions / bad_requests
 # @name delete_non_existing_subscription // Second User
-DELETE {{baseUrl}}/api/users/{{thirdUserId}}/subscribe/
+DELETE http://127.0.0.1:8080/api/users/{{thirdUserId}}/subscribe/
 Authorization: Token {{secondUserToken}}
 
 > {%
@@ -5450,7 +5450,7 @@ Authorization: Token {{secondUserToken}}
 ###
 # group: delete_requests / subscriptions / bad_requests
 # @name delete_subscription_with_non_existing_author_in_url // Second User
-DELETE {{baseUrl}}/api/users/9876/subscribe/
+DELETE http://127.0.0.1:8080/api/users/9876/subscribe/
 Authorization: Token {{secondUserToken}}
 
 > {%
@@ -5466,7 +5466,7 @@ Authorization: Token {{secondUserToken}}
 ###
 # group: delete_requests / subscriptions
 # @name delete_first_subscription // User
-DELETE {{baseUrl}}/api/users/{{thirdUserId}}/subscribe/
+DELETE http://127.0.0.1:8080/api/users/{{thirdUserId}}/subscribe/
 Authorization: Token {{userToken}}
 
 > {%
@@ -5482,7 +5482,7 @@ Authorization: Token {{userToken}}
 ###
 # group: delete_requests / subscriptions
 # @name delete_second_subscription // User
-DELETE {{baseUrl}}/api/users/{{secondUserId}}/subscribe/
+DELETE http://127.0.0.1:8080/api/users/{{secondUserId}}/subscribe/
 Authorization: Token {{userToken}}
 
 > {%
@@ -5498,7 +5498,7 @@ Authorization: Token {{userToken}}
 ###
 # group: delete_requests / shopping_cart / bad_requests
 # @name remove_from_shopping_cart // No Auth
-DELETE {{baseUrl}}/api/recipes/{{firstRecipeId}}/shopping_cart/
+DELETE http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/shopping_cart/
 
 > {%
     // TODO: migrate to HTTP Client Response handler API
@@ -5513,7 +5513,7 @@ DELETE {{baseUrl}}/api/recipes/{{firstRecipeId}}/shopping_cart/
 ###
 # group: delete_requests / shopping_cart / bad_requests
 # @name remove_not_added_from_shopping_cart // Second User
-DELETE {{baseUrl}}/api/recipes/{{firstRecipeId}}/shopping_cart/
+DELETE http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/shopping_cart/
 Authorization: Token {{secondUserToken}}
 
 > {%
@@ -5529,7 +5529,7 @@ Authorization: Token {{secondUserToken}}
 ###
 # group: delete_requests / shopping_cart / bad_requests
 # @name remove_non_existing_recipe_from_shopping_cart // Second User
-DELETE {{baseUrl}}/api/recipes/9876/shopping_cart/
+DELETE http://127.0.0.1:8080/api/recipes/9876/shopping_cart/
 Authorization: Token {{secondUserToken}}
 
 > {%
@@ -5545,7 +5545,7 @@ Authorization: Token {{secondUserToken}}
 ###
 # group: delete_requests / shopping_cart
 # @name remove_from_shopping_cart // User
-DELETE {{baseUrl}}/api/recipes/{{firstRecipeId}}/shopping_cart/
+DELETE http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/shopping_cart/
 Authorization: Token {{userToken}}
 
 > {%
@@ -5561,7 +5561,7 @@ Authorization: Token {{userToken}}
 ###
 # group: delete_requests / favorite / bad_requests
 # @name remove_from_favorite // No Auth
-DELETE {{baseUrl}}/api/recipes/{{firstRecipeId}}/favorite/
+DELETE http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/favorite/
 
 > {%
     // TODO: migrate to HTTP Client Response handler API
@@ -5576,7 +5576,7 @@ DELETE {{baseUrl}}/api/recipes/{{firstRecipeId}}/favorite/
 ###
 # group: delete_requests / favorite / bad_requests
 # @name remove_not_added_from_favorite // Second User
-DELETE {{baseUrl}}/api/recipes/{{firstRecipeId}}/favorite/
+DELETE http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/favorite/
 Authorization: Token {{secondUserToken}}
 
 > {%
@@ -5592,7 +5592,7 @@ Authorization: Token {{secondUserToken}}
 ###
 # group: delete_requests / favorite / bad_requests
 # @name remove_non_existing_recipe_from_favorite // Second User
-DELETE {{baseUrl}}/api/recipes/9876/favorite/
+DELETE http://127.0.0.1:8080/api/recipes/9876/favorite/
 Authorization: Token {{secondUserToken}}
 
 > {%
@@ -5608,7 +5608,7 @@ Authorization: Token {{secondUserToken}}
 ###
 # group: delete_requests / favorite
 # @name remove_from_favorite // User
-DELETE {{baseUrl}}/api/recipes/{{firstRecipeId}}/favorite/
+DELETE http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/favorite/
 Authorization: Token {{userToken}}
 
 > {%
@@ -5624,7 +5624,7 @@ Authorization: Token {{userToken}}
 ###
 # group: delete_requests / recipes / bad_requests
 # @name delete_recipe // No Auth
-DELETE {{baseUrl}}/api/recipes/{{fifthRecipeId}}/
+DELETE http://127.0.0.1:8080/api/recipes/{{fifthRecipeId}}/
 Content-Type: application/json
 
 {
@@ -5657,7 +5657,7 @@ Content-Type: application/json
 ###
 # group: delete_requests / recipes / bad_requests
 # @name delete_recipe_not_by_author // Second User
-DELETE {{baseUrl}}/api/recipes/{{fifthRecipeId}}/
+DELETE http://127.0.0.1:8080/api/recipes/{{fifthRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -5691,7 +5691,7 @@ Content-Type: application/json
 ###
 # group: delete_requests / recipes / bad_requests
 # @name delete_non_existing_recipe // Second User
-DELETE {{baseUrl}}/api/recipes/9876/
+DELETE http://127.0.0.1:8080/api/recipes/9876/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -5725,7 +5725,7 @@ Content-Type: application/json
 ###
 # group: delete_requests / recipes
 # @name delete_first_recipe // Second User
-DELETE {{baseUrl}}/api/recipes/{{firstRecipeId}}/
+DELETE http://127.0.0.1:8080/api/recipes/{{firstRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -5759,7 +5759,7 @@ Content-Type: application/json
 ###
 # group: delete_requests / recipes
 # @name delete_second_recipe // Second User
-DELETE {{baseUrl}}/api/recipes/{{secondRecipeId}}/
+DELETE http://127.0.0.1:8080/api/recipes/{{secondRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -5793,7 +5793,7 @@ Content-Type: application/json
 ###
 # group: delete_requests / recipes
 # @name delete_third_recipe // Second User
-DELETE {{baseUrl}}/api/recipes/{{thirdRecipeId}}/
+DELETE http://127.0.0.1:8080/api/recipes/{{thirdRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -5827,7 +5827,7 @@ Content-Type: application/json
 ###
 # group: delete_requests / recipes
 # @name delete_fourth_recipe // Second User
-DELETE {{baseUrl}}/api/recipes/{{fourthRecipeId}}/
+DELETE http://127.0.0.1:8080/api/recipes/{{fourthRecipeId}}/
 Authorization: Token {{secondUserToken}}
 Content-Type: application/json
 
@@ -5861,7 +5861,7 @@ Content-Type: application/json
 ###
 # group: delete_requests / recipes
 # @name delete_fifth_recipe // Second User
-DELETE {{baseUrl}}/api/recipes/{{fifthRecipeId}}/
+DELETE http://127.0.0.1:8080/api/recipes/{{fifthRecipeId}}/
 Authorization: Token {{userToken}}
 Content-Type: application/json
 
